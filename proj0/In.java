@@ -252,6 +252,7 @@ public final class In {
    /**
      * Read and return the next string.
      */
+    @Deprecated
     public String readString() {
         return scanner.next();
     }
@@ -259,6 +260,7 @@ public final class In {
    /**
      * Read and return the next int.
      */
+    @Deprecated
     public int readInt() {
         return scanner.nextInt();
     }
@@ -266,6 +268,7 @@ public final class In {
    /**
      * Read and return the next double.
      */
+    @Deprecated
     public double readDouble() {
         return scanner.nextDouble();
     }
@@ -375,6 +378,7 @@ public final class In {
      * @deprecated Clearer to use 
      * <tt>new In(filename)</tt>.{@link #readAllInts()}
      */
+    @Deprecated
     public static int[] readInts(String filename) {
         return new In(filename).readAllInts();
     }
@@ -384,6 +388,7 @@ public final class In {
      * @deprecated Clearer to use 
      * <tt>new In(filename)</tt>.{@link #readAllDoubles()}
      */
+   @Deprecated
     public static double[] readDoubles(String filename) {
         return new In(filename).readAllDoubles();
     }
@@ -393,6 +398,7 @@ public final class In {
      * @deprecated Clearer to use 
      * <tt>new In(filename)</tt>.{@link #readAllStrings()}
      */
+   @Deprecated
     public static String[] readStrings(String filename) {
         return new In(filename).readAllStrings();
     }
