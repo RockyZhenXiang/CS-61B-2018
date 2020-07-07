@@ -47,4 +47,78 @@ public class Planet{
 		return G*mass*p.mass / (distance*distance);
 	}
 
+	public double calcForceExertedByX(Planet p){
+
+		double dx = p.xxPos-xxPos;
+		double r = this.calcDistance(p);
+		double sumForce = this.calcForceExertedBy(p);
+
+		return sumForce*dx/r;
+	}
+
+	public double calcForceExertedByY(Planet p){
+
+		double dy = p.yyPos-yyPos;
+		double r = this.calcDistance(p);
+		double sumForce = this.calcForceExertedBy(p);
+
+		return sumForce*dy/r;
+	}
+
+	public double calcNetForceExertedByX(Planet[] allPlanets){
+		double netForceX = 0.0;
+
+		for (Planet p: allPlanets){
+			if (p.equals(this)){
+				continue;
+			}
+			else{
+				netForceX += this.calcForceExertedByX(p);
+			}
+
+		}
+
+		return netForceX;	
+
+	}
+	public double calcNetForceExertedByY(Planet[] allPlanets){
+		double netForceY = 0.0;
+
+		for (Planet p: allPlanets){
+			if (p.equals(this)){
+				continue;
+			}
+			else{
+				netForceY += this.calcForceExertedByY(p);
+			}
+
+		}
+		
+		return netForceY;
+	}
+
+	public void update(double dt, double fX, double fY){
+		double aX = fX/mass;
+		double aY = fY/mass;
+
+		this.xxVel = aX*dt+xxVel;
+		this.yyVel = yyVel+aY*dt;
+
+		this.xxPos = xxPos + this.xxVel*dt;
+		this.yyPos = yyPos + this.yyVel*dt;
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
