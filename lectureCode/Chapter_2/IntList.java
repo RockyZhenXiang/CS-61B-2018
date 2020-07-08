@@ -7,6 +7,11 @@ public class IntList{
 		rest = r;
 	}
 
+	public IntList(IntList L){
+		first = L.first;
+		rest = L.rest;
+	}
+
 	public int size(){
 
 		if (rest == null){
@@ -37,6 +42,43 @@ public class IntList{
 
 	}
 
+    public static IntList incrList(IntList L, int x) {
+        /* Your code here. */
+
+        IntList p = L;
+        IntList Q = new IntList(0,null);
+
+        for (int i=1; i<L.size(); i+= 1){
+        	Q = new IntList(0,Q);
+        }
+        IntList q = Q; 
+
+        while (p != null){
+ 			q.first = p.first + x;
+ 			q = q.rest;
+ 			p = p.rest;
+        }
+
+        System.out.println("Finished incrList");
+        return Q;        
+    }
+
+    /** Returns an IntList identical to L, but with
+      * each element incremented by x. Not allowed to use
+      * the 'new' keyword. */
+    public static IntList dincrList(IntList L, int x) {
+        /* Your code here. */
+
+        IntList p = L;
+
+
+        while (p != null){
+        	p.first += x;
+        	p = p.rest;
+        }
+
+        return L;
+    }
 
 
 	public static void main(String[] args) {
@@ -49,11 +91,34 @@ public class IntList{
 		for (int i=0;i<3;i+=1){
 			System.out.println(L.get(i));
 		}
+
+		// IntList Q = new IntList(L);
+		// for (int i=0;i<3;i+=1){
+		// 	System.out.println(Q.get(i));
+		// }
+
+		// IntList R = dincrList(L,2);
+
+		// for (int i=0;i<3;i+=1){
+		// 	System.out.println(R.get(i));
+		// }
+
+		// for (int i=0;i<3;i+=1){
+		// 	System.out.println(L.get(i));
+		// }
+
+
+		IntList S = incrList(L,2);
+
+		for (int i=0;i<3;i+=1){
+			System.out.println(S.get(i));
+		}
+
+		for (int i=0;i<3;i+=1){
+			System.out.println(L.get(i));
+		}
+		
+
+
 	}
-
-
-
-
-
-
 }
