@@ -1,3 +1,5 @@
+import javax.annotation.processing.SupportedSourceVersion;
+
 public class LinkedListDeque<AnyType> {
 
     public class LinkedNode {
@@ -89,6 +91,20 @@ public class LinkedListDeque<AnyType> {
         }
     }
 
+    public AnyType removeFirst(){
+        if (size == 0){return null;}
+        AnyType res = sentinelNode.next.item;
+
+        if (lastNode == sentinelNode.next){
+            lastNode = sentinelNode;
+            sentinelNode.next = null;
+        }
+
+        sentinelNode.next = sentinelNode.next.next;
+
+        return res;
+    }
+
 
     public static void main(String[] args) {
         LinkedListDeque S = new LinkedListDeque();
@@ -107,6 +123,9 @@ public class LinkedListDeque<AnyType> {
         System.out.println(L.isEmpty());
 
         L.printDeque();
+        S.printDeque();
+
+        System.out.println(S.removeFirst());
         S.printDeque();
 
 
