@@ -100,9 +100,11 @@ public class LinkedListDeque<AnyType> {
         if (lastNode == sentinelNode.next){
             lastNode = sentinelNode;
             sentinelNode.next = null;
+        }else {
+            sentinelNode.next = sentinelNode.next.next;
+            sentinelNode.next.prev = sentinelNode;
         }
 
-        sentinelNode.next = sentinelNode.next.next;
 
         return res;
     }
@@ -142,7 +144,7 @@ public class LinkedListDeque<AnyType> {
 //        S.printDeque();
 
         for (int i=0; i<S.size(); i+=1) {
-            System.out.println(S.removeLast());
+            System.out.println(S.removeFirst());
             S.printDeque();
         }
 
