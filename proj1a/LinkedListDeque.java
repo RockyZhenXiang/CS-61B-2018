@@ -107,6 +107,17 @@ public class LinkedListDeque<AnyType> {
         return res;
     }
 
+    public AnyType removeLast(){
+        if (size == 0){return null;}
+        AnyType res = lastNode.item;
+
+        lastNode = lastNode.prev;
+        lastNode.next = sentinelNode;
+        return res;
+    }
+
+
+
 
     public static void main(String[] args) {
         LinkedListDeque S = new LinkedListDeque("Master");
@@ -129,6 +140,11 @@ public class LinkedListDeque<AnyType> {
 
 //        System.out.println(S.removeFirst());
 //        S.printDeque();
+
+        for (int i=0; i<S.size(); i+=1) {
+            System.out.println(S.removeLast());
+            S.printDeque();
+        }
 
 
     }
