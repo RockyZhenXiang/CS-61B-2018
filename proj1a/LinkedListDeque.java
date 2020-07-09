@@ -118,6 +118,19 @@ public class LinkedListDeque<AnyType> {
         return res;
     }
 
+    public AnyType get(int index){
+        if (index >= size){return null;}
+
+        LinkedNode ptr = sentinelNode.next;
+
+        while(index != 0) {
+            ptr = ptr.next;
+            index -= 1;
+        }
+
+        return ptr.item;
+    }
+
 
 
 
@@ -144,11 +157,12 @@ public class LinkedListDeque<AnyType> {
 //        S.printDeque();
 
         for (int i=0; i<S.size(); i+=1) {
-            System.out.println(S.removeFirst());
+            System.out.println(S.get(i));
             S.printDeque();
         }
 
-
+        System.out.println(S.get(8));
+        System.out.println(L.get(5));
     }
 
 
