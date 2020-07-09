@@ -22,7 +22,7 @@ public class LinkedListDeque {
     private int size;
     private LinkedNode lastNode;
 
-
+    // Constructors
     public LinkedListDeque(int x){
         sentinelNode = new LinkedNode(0, null);
         sentinelNode.next = new LinkedNode(x, null);
@@ -36,6 +36,7 @@ public class LinkedListDeque {
         lastNode = sentinelNode;
     }
 
+    // Methods
     public void addFirst(int x){
 
         sentinelNode.next = new LinkedNode(sentinelNode, x, sentinelNode.next);
@@ -65,6 +66,13 @@ public class LinkedListDeque {
         return lastNode.item;
     }
 
+    public boolean isEmpty(){
+        if (sentinelNode.next == null){
+            return true;
+        }
+        return  false;
+    }
+
     public int size(){
         return size;
     }
@@ -81,6 +89,10 @@ public class LinkedListDeque {
         System.out.println(S.getFirst());
         System.out.println(S.getLast());
         System.out.println(S.size());
+        System.out.println(S.isEmpty());
+
+        LinkedListDeque L = new LinkedListDeque();
+        System.out.println(L.isEmpty());
 
 
     }
