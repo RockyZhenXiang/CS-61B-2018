@@ -1,4 +1,5 @@
 import javax.annotation.processing.SupportedSourceVersion;
+import java.lang.reflect.AnnotatedArrayType;
 
 public class LinkedListDeque<AnyType> {
 
@@ -16,6 +17,14 @@ public class LinkedListDeque<AnyType> {
             prev = p;
             item = i;
             next = n;
+        }
+
+        public AnyType getRec(int index){
+            if (index == 0){
+                return item;
+            }
+
+            return next.getRec(index-1);
         }
     }
 
@@ -131,7 +140,10 @@ public class LinkedListDeque<AnyType> {
         return ptr.item;
     }
 
-
+    public AnyType getRecursive(int index){
+        if (index >= size){return null;}
+        return sentinelNode.next.getRec(index);
+    }
 
 
     public static void main(String[] args) {
@@ -157,7 +169,8 @@ public class LinkedListDeque<AnyType> {
 //        S.printDeque();
 
         for (int i=0; i<S.size(); i+=1) {
-            System.out.println(S.get(i));
+            System.out.print(S.get(i));
+            System.out.println(S.getRecursive(i));
             S.printDeque();
         }
 
