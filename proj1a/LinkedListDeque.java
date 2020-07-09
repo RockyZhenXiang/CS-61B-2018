@@ -1,36 +1,46 @@
 public class LinkedListDeque {
 
-    public class IntNode {
-        public IntNode prev;
+    public class LinkedNode {
+        public LinkedNode prev;
         public int item;
-        public IntNode next;
+        public LinkedNode next;
 
-        public IntNode (int i, IntNode n){
+        public LinkedNode (int i, LinkedNode n){
+            item = i;
+            next = n;
+        }
+
+        public LinkedNode (LinkedNode p, int i, LinkedNode n){
+            prev = p;
             item = i;
             next = n;
         }
     }
 
 
-    private IntNode sentinelNode;
+    private LinkedNode sentinelNode;
     private int size;
-    private IntNode lastNode;
+    private LinkedNode lastNode;
 
 
     public LinkedListDeque(int x){
-        sentinelNode = new IntNode(0, null);
-        sentinelNode.next = new IntNode(x, null);
+        sentinelNode = new LinkedNode(0, null);
+        sentinelNode.next = new LinkedNode(x, null);
         size = 1;
     }
 
     public LinkedListDeque(){
         size = 0;
-        sentinelNode = new IntNode(0, null);
+        sentinelNode = new LinkedNode(0, null);
     }
 
     public void addFirst(int x){
 
-        sentinelNode.next = new IntNode(x, sentinelNode.next);
+        sentinelNode.next = new LinkedNode(sentinelNode, x, sentinelNode.next);
+
+        if (sentinelNode.next.next != null){
+            sentinelNode.next.next.prev = sentinelNode.next;
+        }
 
         size += 1;
     }
@@ -42,7 +52,7 @@ public class LinkedListDeque {
 
     public void addLast(int x){
 
-        lastNode.next = new IntNode(x,null);
+        lastNode.next = new LinkedNode(x,null);
         lastNode = lastNode.next;
         size += 1;
     }
