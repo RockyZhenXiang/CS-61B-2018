@@ -26,22 +26,25 @@ public class LinkedListDeque {
     public LinkedListDeque(int x){
         sentinelNode = new LinkedNode(0, null);
         sentinelNode.next = new LinkedNode(x, null);
+        lastNode = sentinelNode.next;
         size = 1;
     }
 
     public LinkedListDeque(){
         size = 0;
         sentinelNode = new LinkedNode(0, null);
+        lastNode = sentinelNode;
     }
 
     public void addFirst(int x){
 
         sentinelNode.next = new LinkedNode(sentinelNode, x, sentinelNode.next);
 
-        if (sentinelNode.next.next != null){
+        if (sentinelNode.next.next != null) {
             sentinelNode.next.next.prev = sentinelNode.next;
+        }else{
+            lastNode = lastNode.next;
         }
-
         size += 1;
     }
 
