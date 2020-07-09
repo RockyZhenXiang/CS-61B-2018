@@ -77,6 +77,20 @@ public class LinkedListDeque {
         return size;
     }
 
+    public void printDeque(){
+        if (size == 0){
+            return;
+        }
+        LinkedNode ptr = sentinelNode.next;
+
+        while(ptr != lastNode.next){
+            System.out.print(ptr.item + " ");
+            ptr = ptr.next;
+        }
+
+
+    }
+
 
     public static void main(String[] args) {
         LinkedListDeque S = new LinkedListDeque();
@@ -93,6 +107,9 @@ public class LinkedListDeque {
 
         LinkedListDeque L = new LinkedListDeque();
         System.out.println(L.isEmpty());
+
+        L.printDeque();
+        S.printDeque();
 
 
     }
