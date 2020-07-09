@@ -1,16 +1,16 @@
-public class LinkedListDeque {
+public class LinkedListDeque<AnyType> {
 
     public class LinkedNode {
         public LinkedNode prev;
-        public int item;
+        public AnyType item;
         public LinkedNode next;
 
-        public LinkedNode (int i, LinkedNode n){
+        public LinkedNode (AnyType i, LinkedNode n){
             item = i;
             next = n;
         }
 
-        public LinkedNode (LinkedNode p, int i, LinkedNode n){
+        public LinkedNode (LinkedNode p, AnyType i, LinkedNode n){
             prev = p;
             item = i;
             next = n;
@@ -23,8 +23,8 @@ public class LinkedListDeque {
     private LinkedNode lastNode;
 
     // Constructors
-    public LinkedListDeque(int x){
-        sentinelNode = new LinkedNode(0, null);
+    public LinkedListDeque(AnyType x){
+        sentinelNode = new LinkedNode(null, null);
         sentinelNode.next = new LinkedNode(x, null);
         lastNode = sentinelNode.next;
         size = 1;
@@ -32,12 +32,12 @@ public class LinkedListDeque {
 
     public LinkedListDeque(){
         size = 0;
-        sentinelNode = new LinkedNode(0, null);
+        sentinelNode = new LinkedNode(null, null);
         lastNode = sentinelNode;
     }
 
     // Methods
-    public void addFirst(int x){
+    public void addFirst(AnyType x){
 
         sentinelNode.next = new LinkedNode(sentinelNode, x, sentinelNode.next);
 
@@ -49,19 +49,19 @@ public class LinkedListDeque {
         size += 1;
     }
 
-    public int getFirst(){
+    public AnyType getFirst(){
 
         return sentinelNode.next.item;
     }
 
-    public void addLast(int x){
+    public void addLast(AnyType x){
 
         lastNode.next = new LinkedNode(x,null);
         lastNode = lastNode.next;
         size += 1;
     }
 
-    public int getLast(){
+    public AnyType getLast(){
 
         return lastNode.item;
     }
@@ -83,20 +83,18 @@ public class LinkedListDeque {
         }
         LinkedNode ptr = sentinelNode.next;
 
-        while(ptr != lastNode.next){
+        while(ptr != lastNode.next) {
             System.out.print(ptr.item + " ");
             ptr = ptr.next;
         }
-
-
     }
 
 
     public static void main(String[] args) {
         LinkedListDeque S = new LinkedListDeque();
-        S.addFirst(10);
-        S.addFirst(5);
-        S.addFirst(3);
+        S.addFirst("Rocky");
+        S.addFirst("Ricky");
+        S.addFirst("Hailie");
         S.addLast(20);
 
 
