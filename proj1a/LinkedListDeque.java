@@ -27,8 +27,9 @@ public class LinkedListDeque<AnyType> {
     // Constructors
     public LinkedListDeque(AnyType x){
         sentinelNode = new LinkedNode(null, null);
-        sentinelNode.next = new LinkedNode(x, null);
+        sentinelNode.next = new LinkedNode(sentinelNode, x, null);
         lastNode = sentinelNode.next;
+        lastNode.next = sentinelNode;
         size = 1;
     }
 
@@ -36,6 +37,7 @@ public class LinkedListDeque<AnyType> {
         size = 0;
         sentinelNode = new LinkedNode(null, null);
         lastNode = sentinelNode;
+
     }
 
     // Methods
@@ -46,7 +48,7 @@ public class LinkedListDeque<AnyType> {
         if (sentinelNode.next.next != null) {
             sentinelNode.next.next.prev = sentinelNode.next;
         }else{
-            lastNode = lastNode.next;
+            lastNode = sentinelNode.next;
         }
         size += 1;
     }
@@ -58,7 +60,7 @@ public class LinkedListDeque<AnyType> {
 
     public void addLast(AnyType x){
 
-        lastNode.next = new LinkedNode(x,null);
+        lastNode.next = new LinkedNode(lastNode, x,sentinelNode);
         lastNode = lastNode.next;
         size += 1;
     }
@@ -107,7 +109,7 @@ public class LinkedListDeque<AnyType> {
 
 
     public static void main(String[] args) {
-        LinkedListDeque S = new LinkedListDeque();
+        LinkedListDeque S = new LinkedListDeque("Master");
         S.addFirst("Rocky");
         S.addFirst("Ricky");
         S.addFirst("Hailie");
@@ -125,8 +127,8 @@ public class LinkedListDeque<AnyType> {
         L.printDeque();
         S.printDeque();
 
-        System.out.println(S.removeFirst());
-        S.printDeque();
+//        System.out.println(S.removeFirst());
+//        S.printDeque();
 
 
     }
