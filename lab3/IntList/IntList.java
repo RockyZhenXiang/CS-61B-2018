@@ -105,6 +105,34 @@ public class IntList {
         return new IntList(A.first, catenate(A.rest, B));
     }
 
+    /**
+     * Returns a reveres version IntList A.
+     * A should be destructive.
+     */
+    public static IntList reverse(IntList A){
+        if (A == null){
+            return null;
+        }
+        if (A.rest == null){
+            return A;
+        }
+        IntList ptr = A.rest;
+        IntList prev = A;
+        prev.rest = null;
+
+        while(ptr.rest != null){
+            IntList next = ptr.rest;
+            ptr.rest = prev;
+            prev = ptr;
+            ptr = next;
+        }
+
+        ptr.rest = prev;
+        A = ptr;
+
+        return A;
+    }
+
 
     /**
      * DO NOT MODIFY ANYTHING BELOW THIS LINE! Many of the concepts below here
