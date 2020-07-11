@@ -107,15 +107,21 @@ public class ArrayDeque {
      * Returns the item from the back of the list.
      */
     public int getLast() {
-        return items[size - 1];
+        return items[endIndex - 1];
     }
 
     /**
      * Gets the ith item in the list (0 is the front).
      */
     public int get(int i) {
-
-        return items[i];
+        if (i >= size){
+            return 0;
+        }
+        int trueIndex = startIndex + i + 1;
+        if (trueIndex>items.length-1){
+            trueIndex -= items.length;
+        }
+        return items[trueIndex];
     }
 
 
@@ -141,6 +147,8 @@ public class ArrayDeque {
         AL.addFirst(8);
 
         AL.printDeque();
-
+        for (int i=0; i<AL.size(); i+=1){
+            System.out.println(AL.get(i));
+        }
     }
 }
