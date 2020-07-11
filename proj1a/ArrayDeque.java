@@ -68,6 +68,40 @@ public class ArrayDeque {
         }
         UsageRatio = (double)size / (double)items.length;
     }
+    /**
+     * Check if the AList is empty
+     */
+    public boolean isEmpty(){
+        if (size == 0){
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Returns the number of items in the list.
+     */
+    public int size() {
+        return size;
+    }
+
+    /**
+     * Prints the items in the deque from first to last, separated by a space.
+     */
+
+    public void printDeque(){
+        int i = startIndex + 1;
+        while (i != endIndex) {
+            System.out.print(items[i] + " ");
+            if (i == items.length-1) {
+                i = 0;
+            } else {
+                i += 1;
+            }
+        }
+    }
+
 
     /**
      * Returns the item from the back of the list.
@@ -84,12 +118,6 @@ public class ArrayDeque {
         return items[i];
     }
 
-    /**
-     * Returns the number of items in the list.
-     */
-    public int size() {
-        return size;
-    }
 
     /**
      * Deletes item from back of the list and
@@ -111,6 +139,8 @@ public class ArrayDeque {
         AL.addFirst(10);
         AL.addFirst(9);
         AL.addFirst(8);
+
+        AL.printDeque();
 
     }
 }
