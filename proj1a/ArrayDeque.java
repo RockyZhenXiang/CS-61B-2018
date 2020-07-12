@@ -33,6 +33,7 @@ public class ArrayDeque {
      */
 
     private void reSize(int capacity) {
+        if (size == 0) return;
         int[] a = new int[capacity];
         int firstIndex;
         int lastIndex;
@@ -165,6 +166,26 @@ public class ArrayDeque {
         return res;
     }
 
+    /**
+     * Deletes item from the head of the list and
+     * returns deleted item.
+     */
+    public int removeFirst() {
+
+        if (startIndex == items.length - 1){
+            startIndex = 0;
+        }else{
+            startIndex += 1;
+        }
+        int res = items[startIndex];
+        items[startIndex] = 0; //not necessary, because the user cannot reach it. But in genetic array, be setting it into null, we can save memory.
+        size -= 1;
+
+        UsageRatio = (double)size / (double)items.length;
+        if (UsageRatio < 0.25) reSize((int) (items.length * 0.5));
+        return res;
+    }
+
 
     public static void main(String[] args) {
         ArrayDeque AL = new ArrayDeque();
@@ -192,6 +213,31 @@ public class ArrayDeque {
         System.out.println(AL.removeLast());
         System.out.println(AL.removeLast());
         System.out.println(AL.removeLast());
+
+        AL.addLast(10);
+        AL.addLast(9);
+        AL.addLast(8);
+        AL.addFirst(10);
+        AL.addFirst(9);
+        AL.addFirst(8);
+        AL.addLast(10);
+        AL.addLast(9);
+        AL.addLast(8);
+        AL.addFirst(10);
+        AL.addFirst(9);
+        AL.addFirst(8);
+        System.out.println(AL.removeFirst());
+        System.out.println(AL.removeFirst());
+        System.out.println(AL.removeFirst());
+        System.out.println(AL.removeFirst());
+        System.out.println(AL.removeFirst());
+        System.out.println(AL.removeFirst());
+        System.out.println(AL.removeFirst());
+        System.out.println(AL.removeFirst());
+        System.out.println(AL.removeFirst());
+        System.out.println(AL.removeFirst());
+        System.out.println(AL.removeFirst());
+        System.out.println(AL.removeFirst());
 
         AL.printDeque();
         for (int i=0; i<AL.size(); i+=1){
