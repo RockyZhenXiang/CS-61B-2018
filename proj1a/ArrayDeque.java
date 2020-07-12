@@ -28,11 +28,35 @@ public class ArrayDeque {
 
     }
 
-    private void reSize(int capacity) {
+    /**
+     * Resizing the array to size = capacity if to many item is added or to many empty boxes
+     */
 
+    private void reSize(int capacity) {
         int[] a = new int[capacity];
-        System.arraycopy(items, 0, a, 0, size);
+        int firstIndex;
+        int lastIndex;
+        if (startIndex+1-items.length == 0){
+            firstIndex = 0;
+        }else{
+            firstIndex = startIndex + 1;
+        }
+        if (endIndex == 0){
+            lastIndex = items.length - 1;
+        }else{
+            lastIndex = endIndex - 1;
+        }
+
+        if (firstIndex > lastIndex){
+            System.arraycopy(items, firstIndex, a, 0, items.length - firstIndex );
+            System.arraycopy(items, 0, a, items.length - firstIndex, lastIndex + 1);
+        }else{
+            System.arraycopy(items, firstIndex, a, 0, size);
+        }
         items = a;
+        startIndex = items.length - 1;
+        endIndex = size;
+        UsageRatio = (double)size / (double)items.length;
     }
 
     /**
@@ -139,6 +163,12 @@ public class ArrayDeque {
 
     public static void main(String[] args) {
         ArrayDeque AL = new ArrayDeque();
+        AL.addLast(10);
+        AL.addLast(9);
+        AL.addLast(8);
+        AL.addFirst(10);
+        AL.addFirst(9);
+        AL.addFirst(8);
         AL.addLast(10);
         AL.addLast(9);
         AL.addLast(8);
