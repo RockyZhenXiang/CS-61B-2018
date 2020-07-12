@@ -1,25 +1,25 @@
 import javax.annotation.processing.SupportedSourceVersion;
 import java.lang.reflect.AnnotatedArrayType;
 
-public class LinkedListDeque<AnyType> {
+public class LinkedListDeque<T> {
 
     public class LinkedNode {
         public LinkedNode prev;
-        public AnyType item;
+        public T item;
         public LinkedNode next;
 
-        public LinkedNode (AnyType i, LinkedNode n){
+        public LinkedNode (T i, LinkedNode n){
             item = i;
             next = n;
         }
 
-        public LinkedNode (LinkedNode p, AnyType i, LinkedNode n){
+        public LinkedNode (LinkedNode p, T i, LinkedNode n){
             prev = p;
             item = i;
             next = n;
         }
 
-        public AnyType getRec(int index){
+        public T getRec(int index){
             if (index == 0){
                 return item;
             }
@@ -34,7 +34,7 @@ public class LinkedListDeque<AnyType> {
     private LinkedNode lastNode;
 
     // Constructors
-    public LinkedListDeque(AnyType x){
+    public LinkedListDeque(T x){
         sentinelNode = new LinkedNode(null, null);
         sentinelNode.next = new LinkedNode(sentinelNode, x, null);
         lastNode = sentinelNode.next;
@@ -50,7 +50,7 @@ public class LinkedListDeque<AnyType> {
     }
 
     // Methods
-    public void addFirst(AnyType x){
+    public void addFirst(T x){
 
         sentinelNode.next = new LinkedNode(sentinelNode, x, sentinelNode.next);
 
@@ -62,28 +62,25 @@ public class LinkedListDeque<AnyType> {
         size += 1;
     }
 
-    public AnyType getFirst(){
+    public T getFirst(){
 
         return sentinelNode.next.item;
     }
 
-    public void addLast(AnyType x){
+    public void addLast(T x){
 
         lastNode.next = new LinkedNode(lastNode, x,sentinelNode);
         lastNode = lastNode.next;
         size += 1;
     }
 
-    public AnyType getLast(){
+    public T getLast(){
 
         return lastNode.item;
     }
 
-    public boolean isEmpty(){
-        if (sentinelNode.next == null){
-            return true;
-        }
-        return  false;
+    public boolean isEmpty() {
+        return size == 0;
     }
 
     public int size(){
@@ -102,9 +99,9 @@ public class LinkedListDeque<AnyType> {
         }
     }
 
-    public AnyType removeFirst(){
-        if (size == 0){return null;}
-        AnyType res = sentinelNode.next.item;
+    public T removeFirst() {
+        if (size == 0) { return null; }
+        T res = sentinelNode.next.item;
 
         if (lastNode == sentinelNode.next){
             lastNode = sentinelNode;
@@ -114,21 +111,23 @@ public class LinkedListDeque<AnyType> {
             sentinelNode.next.prev = sentinelNode;
         }
 
+        size -= 1;
 
         return res;
     }
 
-    public AnyType removeLast(){
-        if (size == 0){return null;}
-        AnyType res = lastNode.item;
+    public T removeLast() {
+        if (size == 0) { return null; }
+        T res = lastNode.item;
 
         lastNode = lastNode.prev;
         lastNode.next = sentinelNode;
+        size -= 1;
         return res;
     }
 
-    public AnyType get(int index){
-        if (index >= size){return null;}
+    public T get(int index) {
+        if (index >= size) { return null; }
 
         LinkedNode ptr = sentinelNode.next;
 
@@ -140,7 +139,7 @@ public class LinkedListDeque<AnyType> {
         return ptr.item;
     }
 
-    public AnyType getRecursive(int index){
+    public T getRecursive(int index){
         if (index >= size){return null;}
         return sentinelNode.next.getRec(index);
     }
@@ -154,28 +153,12 @@ public class LinkedListDeque<AnyType> {
         S.addLast(20);
 
 
-        System.out.println(S.getFirst());
-        System.out.println(S.getLast());
-        System.out.println(S.size());
-        System.out.println(S.isEmpty());
-
-        LinkedListDeque L = new LinkedListDeque();
-        System.out.println(L.isEmpty());
-
-        L.printDeque();
-        S.printDeque();
-
-//        System.out.println(S.removeFirst());
-//        S.printDeque();
-
         for (int i=0; i<S.size(); i+=1) {
             System.out.print(S.get(i));
             System.out.println(S.getRecursive(i));
             S.printDeque();
         }
 
-        System.out.println(S.get(8));
-        System.out.println(L.get(5));
     }
 
 

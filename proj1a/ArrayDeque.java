@@ -1,4 +1,4 @@
-public class ArrayDeque<AnyType> {
+public class ArrayDeque<T> {
     /**
      * Invariants
      * Array based data structure
@@ -9,9 +9,9 @@ public class ArrayDeque<AnyType> {
 
 
     // Variables
-    private AnyType[] items;
+    private T[] items;
     private int size;
-    private double UsageRatio;  //Used to determined if the AList needed to be shorten.
+    private double usageRatio;  //Used to determined if the AList needed to be shorten.
     private int startIndex;
     private int endIndex;
 
@@ -20,11 +20,11 @@ public class ArrayDeque<AnyType> {
      * Creates an empty list.
      */
     public ArrayDeque() {
-        AnyType[] a = (AnyType[]) new Object[8];
+        T[] a = (T[]) new Object[8];
         items = a;
         size = 0;
-        UsageRatio = 0.0;
-        startIndex = items.length-1;
+        usageRatio = 0.0;
+        startIndex = items.length - 1;
         endIndex = 0;
 
     }
@@ -34,54 +34,56 @@ public class ArrayDeque<AnyType> {
      */
 
     private void reSize(int capacity) {
-        if (size == 0) return;
-        AnyType[] a = (AnyType[]) new Object[capacity * 2];
+        if (size == 0){
+            return;
+        }
+        T[] a = (T[]) new Object[capacity * 2];
         int firstIndex;
         int lastIndex;
-        if (startIndex+1-items.length == 0){
+        if (startIndex + 1 - items.length == 0) {
             firstIndex = 0;
-        }else{
+        } else {
             firstIndex = startIndex + 1;
         }
         if (endIndex == 0){
             lastIndex = items.length - 1;
-        }else{
+        } else {
             lastIndex = endIndex - 1;
         }
 
-        if (firstIndex > lastIndex){
+        if (firstIndex > lastIndex) {
             System.arraycopy(items, firstIndex, a, 0, items.length - firstIndex );
             System.arraycopy(items, 0, a, items.length - firstIndex, lastIndex + 1);
-        }else{
+        } else {
             System.arraycopy(items, firstIndex, a, 0, size);
         }
         items = a;
         startIndex = items.length - 1;
         endIndex = size;
-        UsageRatio = (double)size / (double)items.length;
+        usageRatio = (double) size / (double) items.length;
     }
 
     /**
      * Inserts X into the front of the list.
      */
-    public void addFirst(AnyType x){
-        if (size == items.length){
+    public void addFirst(T x){
+        if (size == items.length) {
             reSize(size*2);
         }
         items[startIndex] = x;
         size += 1;
-        if (startIndex == 0){
+        if (startIndex == 0) {
             startIndex = items.length -1;
-        }else{
+        } else {
             startIndex -= 1;
         }
-        UsageRatio = (double)size / (double)items.length;
+        usageRatio = (double) size / (double) items.length;
     }
 
     /**
      * Inserts X into the back of the list.
      */
-    public void addLast(AnyType x) {
+    public void addLast(T x) {
         if (size == items.length) {
             reSize(size * 2); // by using multiplication, the consuming time is shorten by log(n).
         }
@@ -92,7 +94,7 @@ public class ArrayDeque<AnyType> {
         }else{
             endIndex = 0;
         }
-        UsageRatio = (double)size / (double)items.length;
+        usageRatio = (double)size / (double)items.length;
     }
     /**
      * Check if the AList is empty
@@ -130,14 +132,14 @@ public class ArrayDeque<AnyType> {
     /**
      * Returns the item from the back of the list.
      */
-    public AnyType getLast() {
+    public T getLast() {
         return items[endIndex - 1];
     }
 
     /**
      * Gets the ith item in the list (0 is the front).
      */
-    public AnyType get(int i) {
+    public T get(int i) {
         if (i >= size){
             return null;
         }
@@ -153,9 +155,9 @@ public class ArrayDeque<AnyType> {
      * Deletes item from back of the list and
      * returns deleted item.
      */
-    public AnyType removeLast() {
+    public T removeLast() {
         if (size == 0) return null;
-        AnyType res = items[endIndex - 1];
+        T res = items[endIndex - 1];
         items[endIndex - 1] = null; //not necessary, because the user cannot reach it. But in genetic array, be setting it into null, we can save memory.
         size -= 1;
         if (endIndex == 0){
@@ -163,8 +165,8 @@ public class ArrayDeque<AnyType> {
         }else{
             endIndex -= 1;
         }
-        UsageRatio = (double)size / (double)items.length;
-        if (UsageRatio < 0.25) reSize((int) (items.length * 0.5));
+        usageRatio = (double)size / (double)items.length;
+        if (usageRatio < 0.25) reSize((int) (items.length * 0.5));
         return res;
     }
 
@@ -172,7 +174,7 @@ public class ArrayDeque<AnyType> {
      * Deletes item from the head of the list and
      * returns deleted item.
      */
-    public AnyType removeFirst() {
+    public T removeFirst() {
         if (size == 0) return null;
 
         if (startIndex == items.length - 1){
@@ -180,12 +182,12 @@ public class ArrayDeque<AnyType> {
         }else{
             startIndex += 1;
         }
-        AnyType res = items[startIndex];
+        T res = items[startIndex];
         items[startIndex] = null; //not necessary, because the user cannot reach it. But in genetic array, be setting it into null, we can save memory.
         size -= 1;
 
-        UsageRatio = (double)size / (double)items.length;
-        if (UsageRatio < 0.25) reSize((int) (items.length * 0.5));
+        usageRatio = (double)size / (double)items.length;
+        if (usageRatio < 0.25) reSize((int) (items.length * 0.5));
         return res;
     }
 

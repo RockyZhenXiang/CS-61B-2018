@@ -83,9 +83,20 @@ public class LinkedListDequeTest {
 
 	}
 
+	/** Failed Test #1 */
+	public static void testA003() {
+		LinkedListDeque A = new LinkedListDeque();
+		System.out.println(A.isEmpty());
+		A.addFirst(1);
+		A.removeLast();
+		System.out.println(A.isEmpty());
+	}
+
 	public static void main(String[] args) {
 		System.out.println("Running tests.\n");
 		addIsEmptySizeTest();
 		addRemoveTest();
+
+		testA003();
 	}
 } 
