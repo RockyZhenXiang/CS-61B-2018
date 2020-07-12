@@ -96,10 +96,7 @@ public class ArrayDeque {
      * Check if the AList is empty
      */
     public boolean isEmpty(){
-        if (size == 0){
-            return true;
-        }
-        return false;
+        return size == 0;
     }
 
 
@@ -115,6 +112,7 @@ public class ArrayDeque {
      */
 
     public void printDeque(){
+        if (size == 0) return;
         int i = startIndex + 1;
         while (i != endIndex) {
             System.out.print(items[i] + " ");
@@ -154,9 +152,16 @@ public class ArrayDeque {
      * returns deleted item.
      */
     public int removeLast() {
-        int res = items[size - 1];
-        // items[size-1] = 0; not necessary, because the user cannot reach it. But in genetic array, be setting it into null, we can save memory.
+        int res = items[endIndex - 1];
+        items[endIndex - 1] = 0; //not necessary, because the user cannot reach it. But in genetic array, be setting it into null, we can save memory.
         size -= 1;
+        if (endIndex == 0){
+            endIndex = items.length - 1;
+        }else{
+            endIndex -= 1;
+        }
+        UsageRatio = (double)size / (double)items.length;
+        if (UsageRatio < 0.25) reSize((int) (items.length * 0.5));
         return res;
     }
 
@@ -175,6 +180,18 @@ public class ArrayDeque {
         AL.addFirst(10);
         AL.addFirst(9);
         AL.addFirst(8);
+        System.out.println(AL.removeLast());
+        System.out.println(AL.removeLast());
+        System.out.println(AL.removeLast());
+        System.out.println(AL.removeLast());
+        System.out.println(AL.removeLast());
+        System.out.println(AL.removeLast());
+        System.out.println(AL.removeLast());
+        System.out.println(AL.removeLast());
+        System.out.println(AL.removeLast());
+        System.out.println(AL.removeLast());
+        System.out.println(AL.removeLast());
+        System.out.println(AL.removeLast());
 
         AL.printDeque();
         for (int i=0; i<AL.size(); i+=1){
