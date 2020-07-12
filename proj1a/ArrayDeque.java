@@ -1,4 +1,4 @@
-public class ArrayDeque {
+public class ArrayDeque<AnyType> {
     /**
      * Invariants
      * Array based data structure
@@ -9,7 +9,7 @@ public class ArrayDeque {
 
 
     // Variables
-    private int[] items;
+    private AnyType[] items;
     private int size;
     private double UsageRatio;  //Used to determined if the AList needed to be shorten.
     private int startIndex;
@@ -20,7 +20,8 @@ public class ArrayDeque {
      * Creates an empty list.
      */
     public ArrayDeque() {
-        items = new int[8];
+        AnyType[] a = (AnyType[]) new Object[8];
+        items = a;
         size = 0;
         UsageRatio = 0.0;
         startIndex = items.length-1;
@@ -34,7 +35,7 @@ public class ArrayDeque {
 
     private void reSize(int capacity) {
         if (size == 0) return;
-        int[] a = new int[capacity];
+        AnyType[] a = (AnyType[]) new Object[capacity * 2];
         int firstIndex;
         int lastIndex;
         if (startIndex+1-items.length == 0){
@@ -63,7 +64,7 @@ public class ArrayDeque {
     /**
      * Inserts X into the front of the list.
      */
-    public void addFirst(int x){
+    public void addFirst(AnyType x){
         if (size == items.length){
             reSize(size*2);
         }
@@ -80,7 +81,7 @@ public class ArrayDeque {
     /**
      * Inserts X into the back of the list.
      */
-    public void addLast(int x) {
+    public void addLast(AnyType x) {
         if (size == items.length) {
             reSize(size * 2); // by using multiplication, the consuming time is shorten by log(n).
         }
@@ -129,16 +130,16 @@ public class ArrayDeque {
     /**
      * Returns the item from the back of the list.
      */
-    public int getLast() {
+    public AnyType getLast() {
         return items[endIndex - 1];
     }
 
     /**
      * Gets the ith item in the list (0 is the front).
      */
-    public int get(int i) {
+    public AnyType get(int i) {
         if (i >= size){
-            return 0;
+            return null;
         }
         int trueIndex = startIndex + i + 1;
         if (trueIndex>items.length-1){
@@ -152,9 +153,10 @@ public class ArrayDeque {
      * Deletes item from back of the list and
      * returns deleted item.
      */
-    public int removeLast() {
-        int res = items[endIndex - 1];
-        items[endIndex - 1] = 0; //not necessary, because the user cannot reach it. But in genetic array, be setting it into null, we can save memory.
+    public AnyType removeLast() {
+        if (size == 0) return null;
+        AnyType res = items[endIndex - 1];
+        items[endIndex - 1] = null; //not necessary, because the user cannot reach it. But in genetic array, be setting it into null, we can save memory.
         size -= 1;
         if (endIndex == 0){
             endIndex = items.length - 1;
@@ -170,15 +172,16 @@ public class ArrayDeque {
      * Deletes item from the head of the list and
      * returns deleted item.
      */
-    public int removeFirst() {
+    public AnyType removeFirst() {
+        if (size == 0) return null;
 
         if (startIndex == items.length - 1){
             startIndex = 0;
         }else{
             startIndex += 1;
         }
-        int res = items[startIndex];
-        items[startIndex] = 0; //not necessary, because the user cannot reach it. But in genetic array, be setting it into null, we can save memory.
+        AnyType res = items[startIndex];
+        items[startIndex] = null; //not necessary, because the user cannot reach it. But in genetic array, be setting it into null, we can save memory.
         size -= 1;
 
         UsageRatio = (double)size / (double)items.length;
@@ -189,18 +192,18 @@ public class ArrayDeque {
 
     public static void main(String[] args) {
         ArrayDeque AL = new ArrayDeque();
-        AL.addLast(10);
-        AL.addLast(9);
-        AL.addLast(8);
-        AL.addFirst(10);
-        AL.addFirst(9);
-        AL.addFirst(8);
-        AL.addLast(10);
-        AL.addLast(9);
-        AL.addLast(8);
-        AL.addFirst(10);
-        AL.addFirst(9);
-        AL.addFirst(8);
+        AL.addLast("Rocky");
+        AL.addLast("Ricky");
+        AL.addLast("Hailie");
+        AL.addFirst("Rocky");
+        AL.addFirst("Ricky");
+        AL.addFirst("Hailie");
+        AL.addLast("Rocky");
+        AL.addLast("Ricky");
+        AL.addLast("Hailie");
+        AL.addFirst("Rocky");
+        AL.addFirst("Ricky");
+        AL.addFirst("Hailie");
         System.out.println(AL.removeLast());
         System.out.println(AL.removeLast());
         System.out.println(AL.removeLast());
@@ -214,18 +217,18 @@ public class ArrayDeque {
         System.out.println(AL.removeLast());
         System.out.println(AL.removeLast());
 
-        AL.addLast(10);
-        AL.addLast(9);
-        AL.addLast(8);
-        AL.addFirst(10);
-        AL.addFirst(9);
-        AL.addFirst(8);
-        AL.addLast(10);
-        AL.addLast(9);
-        AL.addLast(8);
-        AL.addFirst(10);
-        AL.addFirst(9);
-        AL.addFirst(8);
+        AL.addLast("Rocky");
+        AL.addLast("Ricky");
+        AL.addLast("Hailie");
+        AL.addFirst("Rocky");
+        AL.addFirst("Ricky");
+        AL.addFirst("Hailie");
+        AL.addLast("Rocky");
+        AL.addLast("Ricky");
+        AL.addLast("Hailie");
+        AL.addFirst("Rocky");
+        AL.addFirst("Ricky");
+        AL.addFirst("Hailie");
         System.out.println(AL.removeFirst());
         System.out.println(AL.removeFirst());
         System.out.println(AL.removeFirst());

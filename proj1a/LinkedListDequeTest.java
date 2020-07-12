@@ -35,7 +35,6 @@ public class LinkedListDequeTest {
 	  * && is the "and" operation. */
 	public static void addIsEmptySizeTest() {
 		System.out.println("Running add/isEmpty/Size test.");
-		System.out.println("Make sure to uncomment the lines below (and delete this print statement).");
 
 		LinkedListDeque<String> lld1 = new LinkedListDeque<String>();
 
