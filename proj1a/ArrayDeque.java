@@ -130,13 +130,6 @@ public class ArrayDeque<T> {
 
 
     /**
-     * Returns the item from the back of the list.
-     */
-    public T getLast() {
-        return items[nextLast - 1];
-    }
-
-    /**
      * Gets the ith item in the list (0 is the front).
      */
     public T get(int i) {
@@ -170,7 +163,7 @@ public class ArrayDeque<T> {
         size -= 1;
         nextLast = lastIndex;
         usageRatio = (double)size / (double)items.length;
-        if (usageRatio < 0.25) reSize((int) (items.length * 0.5));
+        if (usageRatio < 0.25) reSize((int) (items.length * 0.25));
         return res;
     }
 
@@ -193,7 +186,7 @@ public class ArrayDeque<T> {
         size -= 1;
 
         usageRatio = (double)size / (double)items.length;
-        if (usageRatio < 0.25) reSize((int) (items.length * 0.5));
+        if (usageRatio < 0.25) reSize((int) (items.length * 0.25));
         return res;
     }
 

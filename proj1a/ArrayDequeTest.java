@@ -123,12 +123,27 @@ public class ArrayDequeTest {
         lld1.isEmpty();
         lld1.addLast(11);
     }
+
+
+
+    public static void megaWriteAndRemoveTest(int n){
+        ArrayDeque<Integer> lld1 = new ArrayDeque<>();
+        for (int i = 0; i < n; i += 1){
+            lld1.addFirst(i);
+        }
+
+        for (int i = 0; i < n - 1; i += 1){
+            lld1.removeLast();
+        }
+
+        System.out.print("");
+    }
     public static void main(String[] args) {
         System.out.println("Running tests.\n");
         addIsEmptySizeTest();
         addRemoveTest();
         D003Test();
         D005Test();
+        megaWriteAndRemoveTest(64);
     }
-
 }
