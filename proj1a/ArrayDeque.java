@@ -1,252 +1,202 @@
 public class ArrayDeque<T> {
-    /**
-     * Invariants
-     * Array based data structure
-     * size = number of items
-     * startIndex always points before at the first item
-     * endIndex always points at the next index after the last item
-     */
-
-
-    // Variables
     private T[] items;
+    private int nextFirst;
+    private int nextLast;
     private int size;
-    private double usageRatio;  //Used to determined if the AList needed to be shorten.
-    private int startIndex;
-    private int endIndex;
 
-
-    /**
-     * Creates an empty list.
-     */
+    @SuppressWarnings("unchecked")
     public ArrayDeque() {
-        T[] a = (T[]) new Object[8];
-        items = a;
+        items = (T []) new Object[8];
+        nextFirst = 3;
+        nextLast = 4;
         size = 0;
-        usageRatio = 0.0;
-        startIndex = items.length - 1;
-        endIndex = 0;
-
     }
 
-    /**
-     * Resizing the array to size = capacity if to many item is added or to many empty boxes
-     */
-
-    private void reSize(int capacity) {
-        if (size == 0){
-            return;
-        }
-        T[] a = (T[]) new Object[capacity * 2];
-        int firstIndex;
-        int lastIndex;
-        if (startIndex + 1 - items.length == 0) {
-            firstIndex = 0;
-        } else {
-            firstIndex = startIndex + 1;
-        }
-        if (endIndex == 0){
-            lastIndex = items.length - 1;
-        } else {
-            lastIndex = endIndex - 1;
-        }
-
-        if (firstIndex > lastIndex) {
-            System.arraycopy(items, firstIndex, a, 0, items.length - firstIndex );
-            System.arraycopy(items, 0, a, items.length - firstIndex, lastIndex + 1);
-        } else {
-            System.arraycopy(items, firstIndex, a, 0, size);
-        }
-        items = a;
-        startIndex = items.length - 1;
-        endIndex = size;
-        usageRatio = (double) size / (double) items.length;
+    /** Creating a deep copy means that you create an
+     entirely new ArrayDeque, with the exact same
+     items as other. */
+    @SuppressWarnings("unchecked")
+    public ArrayDeque(ArrayDeque other) {
+        items = (T []) new Object[other.items.length];
+        System.arraycopy(other.items, 0, items, 0, other.items.length);
+        nextFirst = other.nextFirst;
+        nextLast = other.nextLast;
+        size = other.size;
     }
 
-    /**
-     * Inserts X into the front of the list.
-     */
-    public void addFirst(T x){
-        if (size == items.length) {
-            reSize(size*2);
-        }
-        items[startIndex] = x;
-        size += 1;
-        if (startIndex == 0) {
-            startIndex = items.length -1;
+    @SuppressWarnings("unchecked")
+    private void resizeUp() {
+        int newCapacity = items.length * 2;
+        int posFirstElement;
+        if ((nextFirst + 1) % items.length >= 0) {
+            posFirstElement = (nextFirst + 1) % items.length;
         } else {
-            startIndex -= 1;
+            posFirstElement = (nextFirst + 1) % items.length + items.length;
         }
-        usageRatio = (double) size / (double) items.length;
+       
+        int numOfElIn1stCopy = items.length - posFirstElement;
+        int numOfElIn2ndCopy = items.length - numOfElIn1stCopy;
+        
+        T[] temp = (T []) new Object[newCapacity];
+        
+        System.arraycopy(items, posFirstElement, temp, newCapacity / 4, numOfElIn1stCopy);
+        System.arraycopy(items, 0, temp, newCapacity / 4 + numOfElIn1stCopy, numOfElIn2ndCopy);
+        
+        this.items = temp;
+        nextFirst = newCapacity / 4 - 1;
+        nextLast = newCapacity / 4 * 3;
     }
 
-    /**
-     * Inserts X into the back of the list.
-     */
-    public void addLast(T x) {
-        if (size == items.length) {
-            reSize(size * 2); // by using multiplication, the consuming time is shorten by log(n).
+    @SuppressWarnings("unchecked")
+    private void resizeDown() {
+        int newCapacity = items.length / 2;
+        int posFirstElement;
+        int posLastElement;
+
+        /* Find out the position of 1st element */
+        if ((nextFirst + 1) % items.length >= 0) {
+            posFirstElement = (nextFirst + 1) % items.length;
+        } else {
+            posFirstElement = (nextFirst + 1) % items.length + items.length;
         }
-        items[endIndex] = x;
-        size += 1;
-        if (endIndex != size) {
-            endIndex += 1;
-        }else{
-            endIndex = 0;
+        /* Find out the position of last element */
+        if ((nextLast - 1) % items.length >= 0) {
+            posLastElement = (nextLast - 1) % items.length;
+        } else {
+            posLastElement = (nextLast - 1) % items.length + items.length;
         }
-        usageRatio = (double)size / (double)items.length;
+
+        T[] temp = (T []) new Object[newCapacity];
+
+        /* Check if not wrapped around */
+        if (posLastElement > posFirstElement) {
+            int numOfElIn1stCopy = size;
+            System.arraycopy(items, posFirstElement, temp, newCapacity / 4, numOfElIn1stCopy);
+        } else {
+            int numOfElIn1stCopy = items.length - posFirstElement;
+            int numOfElIn2ndCopy = size - numOfElIn1stCopy;
+
+            System.arraycopy(items, posFirstElement, temp, newCapacity / 4, numOfElIn1stCopy);
+            System.arraycopy(items, 0, temp, newCapacity / 4 + numOfElIn1stCopy, numOfElIn2ndCopy);
+        }
+
+        this.items = temp;
+        nextFirst = newCapacity / 4 - 1;
+        nextLast = newCapacity / 4 * 3;
     }
-    /**
-     * Check if the AList is empty
-     */
-    public boolean isEmpty(){
+
+    /**  Adds an item of type T to the front of the deque.*/
+    public void addFirst(T item) {
+        if (this.size == this.items.length) {
+            resizeUp();
+            this.addFirst(item);
+        } else {
+            this.items[nextFirst] = item;
+            if ((nextFirst - 1) % items.length >= 0) {
+                nextFirst = (nextFirst - 1) % items.length;
+            } else {
+                nextFirst = (nextFirst - 1) % items.length + items.length;
+            }
+            size++;
+        }
+    }
+
+    /**  Adds an item of type T to the back of the deque.*/
+    public void addLast(T item) {
+        if (this.size == this.items.length) {
+            resizeUp();
+            this.addLast(item);
+        } else {
+            this.items[nextLast] = item;
+            if ((nextLast + 1) % items.length >= 0) {
+                nextLast = (nextLast + 1) % items.length;
+            } else {
+                nextLast = (nextLast + 1) % items.length + items.length;
+            }
+            size++;
+        }
+    }
+
+    /**  Returns true if deque is empty, false otherwise.*/
+    public boolean isEmpty() {
         return size == 0;
     }
 
-
-    /**
-     * Returns the number of items in the list.
-     */
+    /**  Returns the number of items in the deque.*/
     public int size() {
         return size;
     }
-
-    /**
-     * Prints the items in the deque from first to last, separated by a space.
-     */
-
-    public void printDeque(){
-        if (size == 0) return;
-        int i = startIndex + 1;
-        while (i != endIndex) {
+ 
+    /**  Prints the items in the deque from first to last, 
+        separated by a space. Once all the items have been 
+        printed, print out a new line.*/
+    public void printDeque() {
+        int counter = size;
+        int i = nextFirst;
+        while (counter > 0) {
+            i = (i + 1) % items.length;
             System.out.print(items[i] + " ");
-            if (i == items.length-1) {
-                i = 0;
+            counter--;
+        }
+        System.out.println();
+    }
+
+    /**  Removes and returns the item at the front of the deque. 
+         If no such item exists, returns null.*/
+    public T removeFirst() {
+        if (this.size == 0) {
+            return null;
+        } else if (this.size - 1 < this.items.length / 4 && items.length > 15) {
+            resizeDown();
+            return this.removeFirst();
+        } else {
+            if ((nextFirst + 1) % items.length >= 0) {
+                nextFirst = (nextFirst + 1) % items.length;
             } else {
-                i += 1;
+                nextFirst = (nextFirst + 1) % items.length + items.length;
             }
+            T temp = items[nextFirst];
+            items[nextFirst] = null;
+            size--;
+            return temp;
         }
     }
 
-
-    /**
-     * Returns the item from the back of the list.
-     */
-    public T getLast() {
-        return items[endIndex - 1];
+    /**  Removes and returns the item at the back of the deque. 
+         If no such item exists, returns null.*/
+    public T removeLast() {
+        if (this.size == 0) {
+            return null;
+        } else if (this.size - 1 < this.items.length / 4 && items.length > 15) {
+            resizeDown();
+            return this.removeLast();
+        } else {
+            if ((nextLast - 1) % items.length >= 0) {
+                nextLast = (nextLast - 1) % items.length;
+            } else {
+                nextLast = (nextLast - 1) % items.length + items.length;
+            }
+            T temp = items[nextLast];
+            items[nextLast] = null;
+            size--;
+            return temp;
+        }
     }
 
-    /**
-     * Gets the ith item in the list (0 is the front).
-     */
-    public T get(int i) {
-        if (i >= size){
+    /**  Gets the item at the given index, where 0 is the front, 
+        1 is the next item, and so forth. If no such item exists, 
+        returns null. Must not alter the deque!*/
+    public T get(int index) {
+        if (index < 0 || index >= items.length) {
             return null;
         }
-        int trueIndex = startIndex + i + 1;
-        if (trueIndex>items.length-1){
-            trueIndex -= items.length;
+        int pos;
+        if ((nextFirst + 1 + index) % items.length >= 0) {
+            pos = (nextFirst + 1 + index) % items.length;
+        } else {
+            pos = (nextFirst + 1 + index) % items.length + items.length;
         }
-        return items[trueIndex];
-    }
 
-
-    /**
-     * Deletes item from back of the list and
-     * returns deleted item.
-     */
-    public T removeLast() {
-        if (size == 0) return null;
-        T res = items[endIndex - 1];
-        items[endIndex - 1] = null; //not necessary, because the user cannot reach it. But in genetic array, be setting it into null, we can save memory.
-        size -= 1;
-        if (endIndex == 0){
-            endIndex = items.length - 1;
-        }else{
-            endIndex -= 1;
-        }
-        usageRatio = (double)size / (double)items.length;
-        if (usageRatio < 0.25) reSize((int) (items.length * 0.5));
-        return res;
-    }
-
-    /**
-     * Deletes item from the head of the list and
-     * returns deleted item.
-     */
-    public T removeFirst() {
-        if (size == 0) return null;
-
-        if (startIndex == items.length - 1){
-            startIndex = 0;
-        }else{
-            startIndex += 1;
-        }
-        T res = items[startIndex];
-        items[startIndex] = null; //not necessary, because the user cannot reach it. But in genetic array, be setting it into null, we can save memory.
-        size -= 1;
-
-        usageRatio = (double)size / (double)items.length;
-        if (usageRatio < 0.25) reSize((int) (items.length * 0.5));
-        return res;
-    }
-
-
-    public static void main(String[] args) {
-        ArrayDeque AL = new ArrayDeque();
-        AL.addLast("Rocky");
-        AL.addLast("Ricky");
-        AL.addLast("Hailie");
-        AL.addFirst("Rocky");
-        AL.addFirst("Ricky");
-        AL.addFirst("Hailie");
-        AL.addLast("Rocky");
-        AL.addLast("Ricky");
-        AL.addLast("Hailie");
-        AL.addFirst("Rocky");
-        AL.addFirst("Ricky");
-        AL.addFirst("Hailie");
-        System.out.println(AL.removeLast());
-        System.out.println(AL.removeLast());
-        System.out.println(AL.removeLast());
-        System.out.println(AL.removeLast());
-        System.out.println(AL.removeLast());
-        System.out.println(AL.removeLast());
-        System.out.println(AL.removeLast());
-        System.out.println(AL.removeLast());
-        System.out.println(AL.removeLast());
-        System.out.println(AL.removeLast());
-        System.out.println(AL.removeLast());
-        System.out.println(AL.removeLast());
-
-        AL.addLast("Rocky");
-        AL.addLast("Ricky");
-        AL.addLast("Hailie");
-        AL.addFirst("Rocky");
-        AL.addFirst("Ricky");
-        AL.addFirst("Hailie");
-        AL.addLast("Rocky");
-        AL.addLast("Ricky");
-        AL.addLast("Hailie");
-        AL.addFirst("Rocky");
-        AL.addFirst("Ricky");
-        AL.addFirst("Hailie");
-        System.out.println(AL.removeFirst());
-        System.out.println(AL.removeFirst());
-        System.out.println(AL.removeFirst());
-        System.out.println(AL.removeFirst());
-        System.out.println(AL.removeFirst());
-        System.out.println(AL.removeFirst());
-        System.out.println(AL.removeFirst());
-        System.out.println(AL.removeFirst());
-        System.out.println(AL.removeFirst());
-        System.out.println(AL.removeFirst());
-        System.out.println(AL.removeFirst());
-        System.out.println(AL.removeFirst());
-
-        AL.printDeque();
-        for (int i=0; i<AL.size(); i+=1){
-            System.out.println(AL.get(i));
-        }
+        return items[pos];
     }
 }

@@ -1,165 +1,155 @@
-import javax.annotation.processing.SupportedSourceVersion;
-import java.lang.reflect.AnnotatedArrayType;
-
 public class LinkedListDeque<T> {
+    private class GenericNode {
+        private GenericNode prev;
+        private T item;
+        private GenericNode next;
 
-    public class LinkedNode {
-        public LinkedNode prev;
-        public T item;
-        public LinkedNode next;
-
-        public LinkedNode (T i, LinkedNode n){
-            item = i;
-            next = n;
-        }
-
-        public LinkedNode (LinkedNode p, T i, LinkedNode n){
+        private GenericNode(GenericNode p, T i, GenericNode n) {
             prev = p;
             item = i;
             next = n;
         }
 
-        public T getRec(int index){
-            if (index == 0){
-                return item;
+        private T traverseGenericNode(int depth) { 
+            if (depth == 0) {
+                return this.item;
             }
-
-            return next.getRec(index-1);
+            return (this.next).traverseGenericNode(depth - 1);
         }
     }
 
-
-    private LinkedNode sentinelNode;
+    private GenericNode sentFront;
+    private GenericNode sentBack;;
     private int size;
-    private LinkedNode lastNode;
 
-    // Constructors
-    public LinkedListDeque(T x){
-        sentinelNode = new LinkedNode(null, null);
-        sentinelNode.next = new LinkedNode(sentinelNode, x, null);
-        lastNode = sentinelNode.next;
-        lastNode.next = sentinelNode;
-        size = 1;
+    public LinkedListDeque() {
+        sentFront = new GenericNode(null, null, null);
+        sentBack = new GenericNode(sentFront, null, null);
+        sentFront.next = sentBack;
     }
 
-    public LinkedListDeque(){
-        size = 0;
-        sentinelNode = new LinkedNode(null, null);
-        lastNode = sentinelNode;
-
-    }
-
-    // Methods
-    public void addFirst(T x){
-
-        sentinelNode.next = new LinkedNode(sentinelNode, x, sentinelNode.next);
-
-        if (sentinelNode.next.next != null) {
-            sentinelNode.next.next.prev = sentinelNode.next;
-        }else{
-            lastNode = sentinelNode.next;
+    /** Creating a deep copy means that you create an
+     entirely new LinkedListDeque, with the exact same
+     items as other. */
+    @SuppressWarnings("unchecked")
+    public LinkedListDeque(LinkedListDeque other) {
+        GenericNode temp = other.sentFront;
+        GenericNode tempForCopy = new GenericNode(temp.prev, temp.item, null);
+        sentFront = tempForCopy;
+        while (temp != other.sentBack) {
+            temp = temp.next;
+            tempForCopy.next = new GenericNode(tempForCopy, temp.item, null);
+            tempForCopy = tempForCopy.next;
         }
+        sentBack = tempForCopy;
+        size = other.size;
+    }
+
+    /**  Adds an item of type T to the front of the deque.*/
+    public void addFirst(T item) {
+        sentFront.next = new GenericNode(sentFront, item, sentFront.next);
+        sentFront.next.next.prev = sentFront.next;
         size += 1;
     }
 
-    public T getFirst(){
-
-        return sentinelNode.next.item;
-    }
-
-    public void addLast(T x){
-
-        lastNode.next = new LinkedNode(lastNode, x,sentinelNode);
-        lastNode = lastNode.next;
+    /**  Adds an item of type T to the back of the deque.*/
+    public void addLast(T item) {
+        sentBack.prev = new GenericNode(sentBack.prev, item, sentBack);
+        sentBack.prev.prev.next = sentBack.prev;
         size += 1;
     }
 
-    public T getLast(){
-
-        return lastNode.item;
-    }
-
+    /**  Returns true if deque is empty, false otherwise.*/
     public boolean isEmpty() {
         return size == 0;
     }
 
-    public int size(){
-        return size;
+    /**  Returns the number of items in the deque.*/
+    public int size() {
+        return this.size;
+    }
+ 
+    /**  Prints the items in the deque from first to last, 
+        separated by a space. Once all the items have been 
+        printed, print out a new line.*/
+    public void printDeque() {
+        GenericNode temp = sentFront.next;
+        while (temp != sentBack) {
+            System.out.print(temp.item + " ");
+            temp = temp.next;
+        }
+        System.out.println();
     }
 
-    public void printDeque(){
-        if (size == 0){
-            return;
-        }
-        LinkedNode ptr = sentinelNode.next;
-
-        while(ptr != lastNode.next) {
-            System.out.print(ptr.item + " ");
-            ptr = ptr.next;
-        }
-    }
-
+    /**  Removes and returns the item at the front of the deque. 
+         If no such item exists, returns null.*/
     public T removeFirst() {
-        if (size == 0) { return null; }
-        T res = sentinelNode.next.item;
-
-        if (lastNode == sentinelNode.next){
-            lastNode = sentinelNode;
-            sentinelNode.next = null;
-        }else {
-            sentinelNode.next = sentinelNode.next.next;
-            sentinelNode.next.prev = sentinelNode;
+        if (size == 0) {
+            return null;
+        } else {
+            T temp = sentFront.next.item;
+            sentFront.next = sentFront.next.next;
+            sentFront.next.prev = sentFront;
+            this.size -= 1;
+            return temp;
         }
-
-        size -= 1;
-
-        return res;
     }
 
+    /**  Removes and returns the item at the back of the deque. 
+         If no such item exists, returns null.*/
     public T removeLast() {
-        if (size == 0) { return null; }
-        T res = lastNode.item;
-
-        lastNode = lastNode.prev;
-        lastNode.next = sentinelNode;
-        size -= 1;
-        return res;
+        if (size == 0) {
+            return null;
+        } else {
+            T temp = sentBack.prev.item;
+            sentBack.prev = sentBack.prev.prev;
+            sentBack.prev.next = sentBack;
+            this.size -= 1;
+            return temp;
+        }
     }
 
+    /**  Gets the item at the given index, where 0 is the front, 
+        1 is the next item, and so forth. If no such item exists, 
+        returns null. Must not alter the deque!*/
     public T get(int index) {
-        if (index >= size) { return null; }
-
-        LinkedNode ptr = sentinelNode.next;
-
-        while(index != 0) {
-            ptr = ptr.next;
-            index -= 1;
+        if (index < 0 || index >= this.size) {
+            return null;
+        } else {
+            GenericNode temp = this.sentFront.next; 
+            for (int i = 0; i < index; i++) {
+                temp = temp.next;
+            }
+            return temp.item;
         }
-
-        return ptr.item;
     }
 
-    public T getRecursive(int index){
-        if (index >= size){return null;}
-        return sentinelNode.next.getRec(index);
-    }
-
-
-    public static void main(String[] args) {
-        LinkedListDeque S = new LinkedListDeque("Master");
-        S.addFirst("Rocky");
-        S.addFirst("Ricky");
-        S.addFirst("Hailie");
-        S.addLast(20);
-
-
-        for (int i=0; i<S.size(); i+=1) {
-            System.out.print(S.get(i));
-            System.out.println(S.getRecursive(i));
-            S.printDeque();
+    /* Same as get, but uses recursion. */
+    public T getRecursive(int index) {
+        if (index < 0 || index >= this.size) {
+            return null;
         }
-
+        GenericNode temp = this.sentFront.next;
+        return temp.traverseGenericNode(index);
     }
 
-
+//  public static void main(String[] args) {
+//      LinkedListDeque<String> test1 = new LinkedListDeque<>();
+//      test1.addFirst("One");
+//      // test1.size();
+//      // test1.removeLast();
+//      // test1.size();
+//      test1.addLast("Two");
+//      test1.printDeque();
+//      test1.removeLast();
+//      // System.out.println(test1.getRecursive(2));
+//      // System.out.println("---------------");
+//      test1.printDeque();
+//      // test1.size();
+//      // test1.removeFirst();
+//      // test1.size();
+//      LinkedListDeque<String> test2 = new LinkedListDeque<>(test1);
+//      test2.printDeque();
+//      test1.printDeque();
+//  }
 }
