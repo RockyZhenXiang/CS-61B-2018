@@ -89,7 +89,7 @@ public class ArrayDeque<T> {
         }
         items[nextLast] = x;
         size += 1;
-        if (nextLast != items.length) {
+        if (nextLast != items.length - 1) {
             nextLast += 1;
         }else{
             nextLast = 0;

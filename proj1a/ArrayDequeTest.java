@@ -110,16 +110,18 @@ public class ArrayDequeTest {
 
     public static void D005Test(){
         ArrayDeque<Integer> lld1 = new ArrayDeque<>();
-        lld1.isEmpty();
-        lld1.addLast(1);
+        lld1.addLast(0);
+        lld1.removeFirst();
         lld1.addLast(2);
         lld1.addLast(3);
         lld1.addLast(4);
-        lld1.removeFirst();
+        lld1.addLast(5);
         lld1.addLast(6);
         lld1.addLast(7);
         lld1.addLast(8);
         lld1.removeFirst();
+        lld1.isEmpty();
+        lld1.addLast(11);
     }
     public static void main(String[] args) {
         System.out.println("Running tests.\n");
