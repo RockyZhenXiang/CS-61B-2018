@@ -97,10 +97,36 @@ public class ArrayDequeTest {
         printTestStatus(passed);
 
     }
+
+    public static void D003Test(){
+        ArrayDeque<Integer> lld1 = new ArrayDeque<>();
+        lld1.addFirst(0);
+        lld1.addFirst(1);
+        lld1.addFirst(2);
+        lld1.addFirst(3);
+        lld1.addFirst(4);
+        lld1.removeLast();
+    }
+
+    public static void D005Test(){
+        ArrayDeque<Integer> lld1 = new ArrayDeque<>();
+        lld1.isEmpty();
+        lld1.addLast(1);
+        lld1.addLast(2);
+        lld1.addLast(3);
+        lld1.addLast(4);
+        lld1.removeFirst();
+        lld1.addLast(6);
+        lld1.addLast(7);
+        lld1.addLast(8);
+        lld1.removeFirst();
+    }
     public static void main(String[] args) {
         System.out.println("Running tests.\n");
         addIsEmptySizeTest();
         addRemoveTest();
+        D003Test();
+        D005Test();
     }
 
 }

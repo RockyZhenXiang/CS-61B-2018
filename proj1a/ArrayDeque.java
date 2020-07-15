@@ -3,8 +3,8 @@ public class ArrayDeque<T> {
      * Invariants
      * Array based data structure
      * size = number of items
-     * startIndex always points before at the first item
-     * endIndex always points at the next index after the last item
+     * nextFirst always points before at the first item
+     * nextLast always points at the next index after the last item
      */
 
 
@@ -12,8 +12,8 @@ public class ArrayDeque<T> {
     private T[] items;
     private int size;
     private double usageRatio;  //Used to determined if the AList needed to be shorten.
-    private int startIndex;
-    private int endIndex;
+    private int nextFirst;
+    private int nextLast;
 
 
     /**
@@ -24,8 +24,8 @@ public class ArrayDeque<T> {
         items = a;
         size = 0;
         usageRatio = 0.0;
-        startIndex = items.length - 1;
-        endIndex = 0;
+        nextFirst = items.length - 1;
+        nextLast = 0;
 
     }
 
@@ -40,15 +40,15 @@ public class ArrayDeque<T> {
         T[] a = (T[]) new Object[capacity * 2];
         int firstIndex;
         int lastIndex;
-        if (startIndex + 1 - items.length == 0) {
+        if (nextFirst + 1 - items.length == 0) {
             firstIndex = 0;
         } else {
-            firstIndex = startIndex + 1;
+            firstIndex = nextFirst + 1;
         }
-        if (endIndex == 0){
+        if (nextLast == 0){
             lastIndex = items.length - 1;
         } else {
-            lastIndex = endIndex - 1;
+            lastIndex = nextLast - 1;
         }
 
         if (firstIndex > lastIndex) {
@@ -58,8 +58,8 @@ public class ArrayDeque<T> {
             System.arraycopy(items, firstIndex, a, 0, size);
         }
         items = a;
-        startIndex = items.length - 1;
-        endIndex = size;
+        nextFirst = items.length - 1;
+        nextLast = size;
         usageRatio = (double) size / (double) items.length;
     }
 
@@ -70,12 +70,12 @@ public class ArrayDeque<T> {
         if (size == items.length) {
             reSize(size*2);
         }
-        items[startIndex] = x;
+        items[nextFirst] = x;
         size += 1;
-        if (startIndex == 0) {
-            startIndex = items.length -1;
+        if (nextFirst == 0) {
+            nextFirst = items.length -1;
         } else {
-            startIndex -= 1;
+            nextFirst -= 1;
         }
         usageRatio = (double) size / (double) items.length;
     }
@@ -87,12 +87,12 @@ public class ArrayDeque<T> {
         if (size == items.length) {
             reSize(size * 2); // by using multiplication, the consuming time is shorten by log(n).
         }
-        items[endIndex] = x;
+        items[nextLast] = x;
         size += 1;
-        if (endIndex != size) {
-            endIndex += 1;
+        if (nextLast != items.length) {
+            nextLast += 1;
         }else{
-            endIndex = 0;
+            nextLast = 0;
         }
         usageRatio = (double)size / (double)items.length;
     }
@@ -117,8 +117,8 @@ public class ArrayDeque<T> {
 
     public void printDeque(){
         if (size == 0) return;
-        int i = startIndex + 1;
-        while (i != endIndex) {
+        int i = nextFirst + 1;
+        while (i != nextLast) {
             System.out.print(items[i] + " ");
             if (i == items.length-1) {
                 i = 0;
@@ -133,7 +133,7 @@ public class ArrayDeque<T> {
      * Returns the item from the back of the list.
      */
     public T getLast() {
-        return items[endIndex - 1];
+        return items[nextLast - 1];
     }
 
     /**
@@ -143,7 +143,7 @@ public class ArrayDeque<T> {
         if (i >= size){
             return null;
         }
-        int trueIndex = startIndex + i + 1;
+        int trueIndex = nextFirst + i + 1;
         if (trueIndex>items.length-1){
             trueIndex -= items.length;
         }
@@ -156,15 +156,19 @@ public class ArrayDeque<T> {
      * returns deleted item.
      */
     public T removeLast() {
-        if (size == 0) return null;
-        T res = items[endIndex - 1];
-        items[endIndex - 1] = null; //not necessary, because the user cannot reach it. But in genetic array, be setting it into null, we can save memory.
-        size -= 1;
-        if (endIndex == 0){
-            endIndex = items.length - 1;
-        }else{
-            endIndex -= 1;
+        if (size == 0) {
+            return null;
         }
+        int lastIndex;
+        if (nextLast == 0){
+            lastIndex = items.length - 1;
+        }else{
+            lastIndex = nextLast - 1;
+        }
+        T res = items[lastIndex];
+        items[lastIndex] = null; //not necessary, because the user cannot reach it. But in genetic array, be setting it into null, we can save memory.
+        size -= 1;
+        nextLast = lastIndex;
         usageRatio = (double)size / (double)items.length;
         if (usageRatio < 0.25) reSize((int) (items.length * 0.5));
         return res;
@@ -175,15 +179,17 @@ public class ArrayDeque<T> {
      * returns deleted item.
      */
     public T removeFirst() {
-        if (size == 0) return null;
-
-        if (startIndex == items.length - 1){
-            startIndex = 0;
-        }else{
-            startIndex += 1;
+        if (size == 0) {
+            return null;
         }
-        T res = items[startIndex];
-        items[startIndex] = null; //not necessary, because the user cannot reach it. But in genetic array, be setting it into null, we can save memory.
+        int firstIndex;
+        if (nextFirst == items.length - 1){
+            nextFirst = 0;
+        }else{
+            nextFirst += 1;
+        }
+        T res = items[nextFirst];
+        items[nextFirst] = null; //not necessary, because the user cannot reach it. But in genetic array, be setting it into null, we can save memory.
         size -= 1;
 
         usageRatio = (double)size / (double)items.length;
@@ -192,7 +198,7 @@ public class ArrayDeque<T> {
     }
 
 
-    public static void main(String[] args) {
+    private static void main(String[] args) {
         ArrayDeque AL = new ArrayDeque();
         AL.addLast("Rocky");
         AL.addLast("Ricky");
