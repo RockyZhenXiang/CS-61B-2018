@@ -16,4 +16,13 @@ public class TestOffByOne {
         assertFalse(offByOne.equalChars('a','z'));
         assertFalse(offByOne.equalChars('a','a'));
     }
+
+    @Test
+    public void testUpperAndLowerCase() {
+        assertTrue(offByOne.equalChars('A','B'));
+        assertTrue(offByOne.equalChars('R','Q'));
+        assertFalse(offByOne.equalChars('A','b'));
+        assertFalse(offByOne.equalChars('a','Z'));
+        assertFalse(offByOne.equalChars('A','A'));
+    }
 }
