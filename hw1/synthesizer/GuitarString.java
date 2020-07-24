@@ -19,19 +19,15 @@ public class GuitarString {
 
     /* Pluck the guitar string by replacing the buffer with white noise. */
     public void pluck() {
-        // TODO: Dequeue everything in the buffer, and replace it with random numbers
-        //       between -0.5 and 0.5. You can get such a number by using:
-        //       double r = Math.random() - 0.5;
-        //
-        //       Make sure that your random numbers are different from each other.
-        while (buffer.fillCount() != 0) {
-            buffer.dequeue();
-        }
 
-        while (buffer.fillCount() != buffer.capacity()) {
-            double r = Math.random() - 0.5;
-            buffer.enqueue(r);
-        }
+            while (buffer.fillCount() != 0) {
+                buffer.dequeue();
+            }
+
+            while (buffer.fillCount() != buffer.capacity()) {
+                double r = Math.random() - 0.5;
+                buffer.enqueue(r);
+            }
     }
 
     /* Advance the simulation one time step by performing one iteration of
