@@ -136,6 +136,5 @@ public class HexWorld {
         }
         // Draw the world
         ter.renderFrame(world);
-
     }
 }
