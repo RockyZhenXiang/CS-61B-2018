@@ -48,7 +48,7 @@ public class Game {
         for (int x: seedList) {
             seed = 10 * seed + x;
         }
-        TETile[][] finalWorldFrame = CreateWorld.createWorldFromString(seed, WIDTH, HEIGHT, ter);
+        TETile[][] finalWorldFrame = CreateWorld.createWorldFromString(seed, WIDTH, HEIGHT);
         return finalWorldFrame;
     }
 }

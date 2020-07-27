@@ -207,7 +207,7 @@ public class CreateWorld {
      * Creates a world with rooms and hallways with input seeds
      * @param seed: used to create a randomized world
      */
-    public static TETile[][] createWorldFromString(int seed, int width, int height, TERenderer ter) {
+    public static TETile[][] createWorldFromString(int seed, int width, int height) {
 
         // initialize tiles
         TETile[][] world = new TETile[width][height];
@@ -227,54 +227,6 @@ public class CreateWorld {
         addWall(world);
 
 
-        // draw the world
-        ter.renderFrame(world);
         return world;
-    }
-
-    public static void main(String[] args) {
-        ter = new TERenderer();
-
-        // initialize tiles
-        TETile[][] world = new TETile[width][height];
-        for (int x = 0; x < width; x += 1) {
-            for (int y = 0; y < height; y += 1) {
-                world[x][y] = Tileset.NOTHING;
-            }
-        }
-
-        /*
-        // add two rooms
-        RectangluarRoom room1 = new RectangluarRoom(10, 10, 10, 10);
-        RectangluarRoom room2 = new RectangluarRoom(30, 30, 10, 10);
-        addRecRoom(world, room1);
-        addRecRoom(world, room2);
-
-        // add a hallway
-        Hallway hal1 = new Hallway(room1, room2);
-        Hallway.drawHallWay(world, hal1);
-        */
-
-        // add random rooms
-        Random ran = new Random();
-        int seed = ran.nextInt(10000);
-        ArrayList<Room> res = addRandomRecRoom(world, seed);
-
-        // connect all rooms
-        connectAllRooms(world, res);
-
-        // add walls around hallways
-        addWall(world);
-
-        /*
-        // add a hallway
-        Hallway hal1 = new Hallway(res.get(0), res.get(1));
-        Hallway.drawHallWay(world, hal1);
-        */
-
-
-        // Draw the world
-
-        ter.renderFrame(world);
     }
 }
