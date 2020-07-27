@@ -234,7 +234,6 @@ public class CreateWorld {
 
     public static void main(String[] args) {
         ter = new TERenderer();
-        ter.initialize(width, height);
 
         // initialize tiles
         TETile[][] world = new TETile[width][height];
