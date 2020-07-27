@@ -19,32 +19,32 @@ public class Hallway {
      */
 
     public static void drawHallWay(TETile[][] world, Hallway way) {
-        int start_x = way.start.center()[0];
-        int start_y = way.start.center()[1];
-        int end_x = way.end.center()[0];
-        int end_y = way.end.center()[1];
+        int startX = way.start.center()[0];
+        int startY = way.start.center()[1];
+        int endX = way.end.center()[0];
+        int endY = way.end.center()[1];
 
-        int x_diff = end_x - start_x;
-        int y_diff = end_y - start_y;
+        int xDiff = endX - startX;
+        int yDiff = endY - startY;
 
-        int x_temp = start_x;
-        int y_temp = start_y;
+        int xTemp = startX;
+        int yTemp = startY;
 
-        while (x_temp != end_x) {
-            world[x_temp][y_temp] = Tileset.FLOOR;
-            if (x_diff < 0) {
-                x_temp --;
+        while (xTemp != endX) {
+            world[xTemp][yTemp] = Tileset.FLOOR;
+            if (xDiff < 0) {
+                xTemp--;
             } else {
-                x_temp ++;
+                xTemp++;
             }
         }
 
-        while (y_temp != end_y) {
-            world[x_temp][y_temp] = Tileset.FLOOR;
-            if (y_diff < 0) {
-                y_temp --;
+        while (yTemp != endY) {
+            world[xTemp][yTemp] = Tileset.FLOOR;
+            if (yDiff < 0) {
+                yTemp--;
             } else {
-                y_temp ++;
+                yTemp++;
             }
         }
     }

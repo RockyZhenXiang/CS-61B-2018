@@ -18,9 +18,10 @@ public class CreateWorldFromString {
      */
 
     private static boolean inbound(TETile[][] world, RoomAPI room) {
-        int world_width = world.length;
-        int world_height = world[0].length;
-        return !(room.width() + room.xLocation() > world_width || room.yLocation() + room.height() > world_height);
+        int worldWidth = world.length;
+        int worldHeight = world[0].length;
+        return !(room.width() + room.xLocation() > worldWidth
+                || room.yLocation() + room.height() > worldHeight);
     }
 
     /**
@@ -31,8 +32,8 @@ public class CreateWorldFromString {
      */
     private static boolean overlappedRoom(TETile[][] world, RoomAPI room) {
 
-        for(int x = room.xLocation(); x < room.xLocation() + room.width(); x++) {
-            for(int y = room.yLocation(); y < room.yLocation() + room.height(); y++) {
+        for (int x = room.xLocation(); x < room.xLocation() + room.width(); x++) {
+            for (int y = room.yLocation(); y < room.yLocation() + room.height(); y++) {
                 if (world[x][y] == Tileset.FLOOR) {
                     return false;
                 }
@@ -51,7 +52,7 @@ public class CreateWorldFromString {
      */
     private static void addRecRoom(TETile[][] world, int x, int y, int wid, int hi) {
         RectangluarRoom room = new RectangluarRoom(x, y, wid, hi);
-        if (inbound(world, room) == false || overlappedRoom(world, room) == false) {
+        if (!inbound(world, room) || !overlappedRoom(world, room)) {
             return;
         } else {
             int w = room.width();
@@ -74,7 +75,7 @@ public class CreateWorldFromString {
      * @param room: room object
      */
     private static void addRecRoom(TETile[][] world, RectangluarRoom room) {
-        if (inbound(world, room) == false || overlappedRoom(world, room) == false) {
+        if (!inbound(world, room) || !overlappedRoom(world, room)) {
             return;
         } else {
             int w = room.width();
@@ -99,36 +100,36 @@ public class CreateWorldFromString {
      * @param seed : seed used to create random object
      */
     private static ArrayList<Room> addRandomRecRoom(TETile[][] world, long seed) {
-        final Random RANDOM = new Random(seed);
+        final Random random = new Random(seed);
         int worldWidth = world.length;
         int worldHeight = world[0].length;
         int buffer = 5;
         int roomMaxWid = 15;
         int roomMaxHi = 10;
-        int numberOfRoom = RandomUtils.uniform(RANDOM, 5,10);
+        int numberOfRoom = RandomUtils.uniform(random,5,10);
         ArrayList<Room> res = new ArrayList<>();
 
         RectangluarRoom[] recRooms = new RectangluarRoom[1000];
         for (int i = 0; i < recRooms.length; i++) {
-            int x = RandomUtils.uniform(RANDOM, buffer, worldWidth - buffer);
-            int y = RandomUtils.uniform(RANDOM, buffer, worldHeight - buffer);
-            int wid = RandomUtils.uniform(RANDOM, 3, roomMaxWid);
-            int hi = RandomUtils.uniform(RANDOM, 3, roomMaxHi);
+            int x = RandomUtils.uniform(random, buffer, worldWidth - buffer);
+            int y = RandomUtils.uniform(random, buffer, worldHeight - buffer);
+            int wid = RandomUtils.uniform(random, 3, roomMaxWid);
+            int hi = RandomUtils.uniform(random, 3, roomMaxHi);
             recRooms[i] = new RectangluarRoom(x, y, wid, hi);
         }
 
         int existingRooms = 0;
         int j = 0;
-        while(existingRooms < numberOfRoom && j < recRooms.length ) {
+        while (existingRooms < numberOfRoom && j < recRooms.length) {
             RectangluarRoom room = recRooms[j];
             if (!inbound(world, room) || !overlappedRoom(world, room)) {
-                j ++ ;
+                j++;
                 continue;
             } else {
                 addRecRoom(world, recRooms[j]);
                 res.add(recRooms[j]);
-                existingRooms ++ ;
-                j ++ ;
+                existingRooms++;
+                j++;
             }
         }
         return res;
@@ -157,7 +158,8 @@ public class CreateWorldFromString {
     }
 
     /**
-     * If there is a floor tile in the 8-point stencil and itself is not a floor tile, then this block should be a wall tile
+     * If there is a floor tile in the 8-point stencil and itself is not a floor tile,
+     * then this block should be a wall tile
      * @param world: TETile[][] world
      * @param x: x coordinate
      * @param y: y coordinate
@@ -168,8 +170,8 @@ public class CreateWorldFromString {
         if (world[x][y] == Tileset.FLOOR || world[x][y] == Tileset.WALL) {
             return false;
         }
-        for(int i = x-1; i <= x + 1 ; i ++) {
-            for(int j = y-1; j <= y + 1 ; j ++) {
+        for (int i = x - 1; i <= x + 1 ; i++) {
+            for (int j = y - 1; j <= y + 1 ; j++) {
                 if (world[i][j] == Tileset.FLOOR) {
                     return true;
                 }
@@ -180,15 +182,16 @@ public class CreateWorldFromString {
 
     /**
      * Add walls around all floor tiles in world
-     * if there is a floor tile in the 8-point stencil and itself is not a floor tile, then this block should be a wall tile
+     * if there is a floor tile in the 8-point stencil and itself is not a floor tile,
+     * then this block should be a wall tile
      * @param world: TETile[][] world
      */
     public static void addWall(TETile[][] world) {
-        int width = world.length;
-        int height = world[0].length;
+        int worldWidth = world.length;
+        int worldHeight = world[0].length;
 
-        for (int i = 1; i < width - 1; i ++) {
-            for (int j = 1; j < height - 1; j ++) {
+        for (int i = 1; i < worldWidth - 1; i++) {
+            for (int j = 1; j < worldHeight - 1; j++) {
                 if (shallChangeToWall(world, i, j)) {
                     world[i][j] = Tileset.WALL;
                 }
@@ -201,12 +204,12 @@ public class CreateWorldFromString {
      * Creates a world with rooms and hallways with input seeds
      * @param seed : used to create a randomized world
      */
-    public static TETile[][] createWorldFromString(long seed, int width, int height) {
+    public static TETile[][] createWorldFromString(long seed, int worldWidth, int worldHeight) {
 
         // initialize tiles
-        TETile[][] world = new TETile[width][height];
-        for (int x = 0; x < width; x += 1) {
-            for (int y = 0; y < height; y += 1) {
+        TETile[][] world = new TETile[worldWidth][worldHeight];
+        for (int x = 0; x < worldWidth; x += 1) {
+            for (int y = 0; y < worldHeight; y += 1) {
                 world[x][y] = Tileset.NOTHING;
             }
         }
