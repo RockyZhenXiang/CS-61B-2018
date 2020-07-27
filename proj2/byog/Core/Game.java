@@ -4,11 +4,13 @@ import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
+import java.util.ArrayList;
+
 public class Game {
 
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
-    public static final int HEIGHT = 30;
+    public static final int HEIGHT = 60;
     TERenderer ter = new TERenderer();
 
     /**
@@ -34,7 +36,22 @@ public class Game {
         // and return a 2D tile representation of the world that would have been
         // drawn if the same inputs had been given to playWithKeyboard().
 
-        TETile[][] finalWorldFrame = null;
+        ArrayList<Integer> seedList = new ArrayList();
+        for (char ch: input.toCharArray()) {
+            if (Character.isDigit(ch)) {
+                seedList.add(Character.getNumericValue(ch));
+            }
+        }
+
+        if (seedList.size() == 0) {
+            throw new RuntimeException("Input needs to contain at least one digit");
+        }
+
+        int seed = 0;
+        for (int x: seedList) {
+            seed = 10 * seed + x;
+        }
+        TETile[][] finalWorldFrame = CreateWorld.createWorld(seed, WIDTH, HEIGHT, ter);
         return finalWorldFrame;
     }
 }

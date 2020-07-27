@@ -7,10 +7,10 @@ import byog.TileEngine.Tileset;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class TestGame {
-    public static final int WIDTH = 80;
-    public static final int HEIGHT = 50;
-    static TERenderer ter = new TERenderer();
+public class CreateWorld {
+    public static int width;
+    public static int height;
+    public static TERenderer ter;
 
     /**
      * check if the room can fit in the world
@@ -203,14 +203,46 @@ public class TestGame {
     }
 
 
-
-    public static void main(String[] args) {
-        ter.initialize(WIDTH, HEIGHT);
+    /**
+     * Creates a world with rooms and hallways with input seeds
+     * @param seed: used to create a randomized world
+     */
+    public static TETile[][] createWorld(int seed, int width, int height, TERenderer ter) {
+        ter.initialize(width, height);
 
         // initialize tiles
-        TETile[][] world = new TETile[WIDTH][HEIGHT];
-        for (int x = 0; x < WIDTH; x += 1) {
-            for (int y = 0; y < HEIGHT; y += 1) {
+        TETile[][] world = new TETile[width][height];
+        for (int x = 0; x < width; x += 1) {
+            for (int y = 0; y < height; y += 1) {
+                world[x][y] = Tileset.NOTHING;
+            }
+        }
+
+        // add random rooms
+        ArrayList<Room> res = addRandomRecRoom(world, seed);
+
+        // connect all rooms
+        connectAllRooms(world, res);
+
+        // add walls around hallways
+        addWall(world);
+
+
+        // draw the world
+        ter.renderFrame(world);
+        return world;
+    }
+
+
+
+    public static void main(String[] args) {
+        ter = new TERenderer();
+        ter.initialize(width, height);
+
+        // initialize tiles
+        TETile[][] world = new TETile[width][height];
+        for (int x = 0; x < width; x += 1) {
+            for (int y = 0; y < height; y += 1) {
                 world[x][y] = Tileset.NOTHING;
             }
         }
