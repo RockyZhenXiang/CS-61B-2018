@@ -139,10 +139,10 @@ public class CreateWorldFromString {
      * @param world
      * @param rooms
      */
-    public static void connectAllRooms(TETile[][] world, ArrayList<Room> rooms) {
+    public static void connectAllRooms(TETile[][] world, ArrayList<Room> rooms, long seed) {
         ArrayList<Room> connectedRooms = new ArrayList<>();
         connectedRooms.add(rooms.get(0)); // adds the first room into connected rooms list
-        Random rand = new Random();
+        Random rand = new Random(seed);
 
         for (Room room: rooms) {
             if (connectedRooms.contains(room)) {
@@ -215,7 +215,7 @@ public class CreateWorldFromString {
         ArrayList<Room> res = addRandomRecRoom(world, seed);
 
         // connect all rooms
-        connectAllRooms(world, res);
+        connectAllRooms(world, res, seed);
 
         // add walls around hallways
         addWall(world);
