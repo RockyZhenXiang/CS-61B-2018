@@ -5,6 +5,7 @@ import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class TestGame {
@@ -104,16 +105,17 @@ public class TestGame {
      * @param world: existing TETile[][] world
      * @param seed: seed used to create random object
      */
-    private static void addRandomRecRoom(TETile[][] world, int seed) {
+    private static ArrayList<RectangluarRoom> addRandomRecRoom(TETile[][] world, int seed) {
         final Random RANDOM = new Random(seed);
         int worldWidth = world.length;
         int worldHeight = world[0].length;
         int buffer = 5;
         int roomMaxWid = 15;
         int roomMaxHi = 10;
-
         int numberOfRoom = RandomUtils.uniform(RANDOM, 5,10);
-        RectangluarRoom[] recRooms = new RectangluarRoom[100];
+        ArrayList<RectangluarRoom> res = new ArrayList<>();
+
+        RectangluarRoom[] recRooms = new RectangluarRoom[1000];
         for (int i = 0; i < recRooms.length; i++) {
             int x = RandomUtils.uniform(RANDOM, buffer, worldWidth - buffer);
             int y = RandomUtils.uniform(RANDOM, buffer, worldHeight - buffer);
@@ -121,6 +123,7 @@ public class TestGame {
             int hi = RandomUtils.uniform(RANDOM, 3, roomMaxHi);
             recRooms[i] = new RectangluarRoom(x, y, wid, hi);
         }
+
         int existingRooms = 0;
         int j = 0;
         while(existingRooms < numberOfRoom && j < recRooms.length ) {
@@ -130,11 +133,14 @@ public class TestGame {
                 continue;
             } else {
                 addRecRoom(world, recRooms[j]);
+                res.add(recRooms[j]);
                 existingRooms ++ ;
                 j ++ ;
             }
         }
+        return res;
     }
+
 
     @Test
     public void testEqual () {
@@ -162,19 +168,25 @@ public class TestGame {
             }
         }
 
-        // put a room
-//        int x = 50;
-//        int y = 30;
-//        int wid = 30;
-//        int hi = 20;
+//        // add two rooms
+//        RectangluarRoom room1 = new RectangluarRoom(10, 10, 10, 10);
+//        RectangluarRoom room2 = new RectangluarRoom(30, 30, 10, 10);
+//        addRecRoom(world, room1);
+//        addRecRoom(world, room2);
 //
-//        addRecRoom(world, x, y, wid, hi);
-//        addRecRoom(world, x+5, y+5, wid, hi);
+//        // add a hallway
+//        Hallway hal1 = new Hallway(room1, room2);
+//        Hallway.drawHallWay(world, hal1);
+
 
         // add random rooms
         Random ran = new Random();
         int seed = ran.nextInt(10000);
-        addRandomRecRoom(world, seed);
+        ArrayList<RectangluarRoom> res = addRandomRecRoom(world, seed);
+
+        // add a hallway
+        Hallway hal1 = new Hallway(res.get(0), res.get(1));
+        Hallway.drawHallWay(world, hal1);
 
         // Draw the world
         ter.renderFrame(world);

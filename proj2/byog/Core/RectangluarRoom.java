@@ -4,7 +4,7 @@ public class RectangluarRoom extends Room{
     public RectangluarRoom(int x, int y, int wid, int hi) {
         xLocation = x;
         yLocation = y;
-        centerLocation = new int[]{x/2, y/2};
+        centerLocation = new int[]{ x + wid / 2, y + hi / 2};
         width = wid;
         height = hi;
     }
