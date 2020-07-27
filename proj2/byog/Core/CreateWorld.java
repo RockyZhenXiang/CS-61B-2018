@@ -233,8 +233,6 @@ public class CreateWorld {
         return world;
     }
 
-
-
     public static void main(String[] args) {
         ter = new TERenderer();
         ter.initialize(width, height);
