@@ -207,8 +207,7 @@ public class CreateWorld {
      * Creates a world with rooms and hallways with input seeds
      * @param seed: used to create a randomized world
      */
-    public static TETile[][] createWorld(int seed, int width, int height, TERenderer ter) {
-        ter.initialize(width, height);
+    public static TETile[][] createWorldFromString(int seed, int width, int height, TERenderer ter) {
 
         // initialize tiles
         TETile[][] world = new TETile[width][height];
