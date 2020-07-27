@@ -106,7 +106,7 @@ public class CreateWorldFromString {
         int buffer = 5;
         int roomMaxWid = 15;
         int roomMaxHi = 10;
-        int numberOfRoom = RandomUtils.uniform(random,5,10);
+        int numberOfRoom = RandomUtils.uniform(random, 5, 10);
         ArrayList<Room> res = new ArrayList<>();
 
         RectangluarRoom[] recRooms = new RectangluarRoom[1000];
@@ -170,8 +170,8 @@ public class CreateWorldFromString {
         if (world[x][y] == Tileset.FLOOR || world[x][y] == Tileset.WALL) {
             return false;
         }
-        for (int i = x - 1; i <= x + 1 ; i++) {
-            for (int j = y - 1; j <= y + 1 ; j++) {
+        for (int i = x - 1; i <= x + 1; i++) {
+            for (int j = y - 1; j <= y + 1; j++) {
                 if (world[i][j] == Tileset.FLOOR) {
                     return true;
                 }
