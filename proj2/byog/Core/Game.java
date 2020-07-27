@@ -2,7 +2,6 @@ package byog.Core;
 
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
-import byog.TileEngine.Tileset;
 
 import java.util.ArrayList;
 
@@ -44,11 +43,11 @@ public class Game {
             throw new RuntimeException("Input needs to contain at least one digit");
         }
 
-        int seed = 0;
+        long seed = 0;
         for (int x: seedList) {
             seed = 10 * seed + x;
         }
-        TETile[][] finalWorldFrame = CreateWorld.createWorldFromString(seed, WIDTH, HEIGHT);
+        TETile[][] finalWorldFrame = CreateWorldFromString.createWorldFromString(seed, WIDTH, HEIGHT);
         return finalWorldFrame;
     }
 }

@@ -1,16 +1,14 @@
 package byog.Core;
 
-import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-public class CreateWorld {
+public class CreateWorldFromString {
     public static int width;
     public static int height;
-    public static TERenderer ter;
 
     /**
      * check if the room can fit in the world
@@ -205,9 +203,9 @@ public class CreateWorld {
 
     /**
      * Creates a world with rooms and hallways with input seeds
-     * @param seed: used to create a randomized world
+     * @param seed : used to create a randomized world
      */
-    public static TETile[][] createWorldFromString(int seed, int width, int height) {
+    public static TETile[][] createWorldFromString(long seed, int width, int height) {
 
         // initialize tiles
         TETile[][] world = new TETile[width][height];
