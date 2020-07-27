@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class CreateWorldFromString {
-    public static int width;
-    public static int height;
+    private static int width;
+    private static int height;
 
     /**
      * check if the room can fit in the world
@@ -20,11 +20,7 @@ public class CreateWorldFromString {
     private static boolean inbound(TETile[][] world, RoomAPI room) {
         int world_width = world.length;
         int world_height = world[0].length;
-        if (room.width() + room.xLocation() > world_width || room.yLocation() + room.height() > world_height) {
-            return false;
-        } else {
-            return true;
-        }
+        return !(room.width() + room.xLocation() > world_width || room.yLocation() + room.height() > world_height);
     }
 
     /**
@@ -99,10 +95,10 @@ public class CreateWorldFromString {
 
     /**
      * Add random number of random size of the RecRoom into the world
-     * @param world: existing TETile[][] world
-     * @param seed: seed used to create random object
+     * @param world : existing TETile[][] world
+     * @param seed : seed used to create random object
      */
-    private static ArrayList<Room> addRandomRecRoom(TETile[][] world, int seed) {
+    private static ArrayList<Room> addRandomRecRoom(TETile[][] world, long seed) {
         final Random RANDOM = new Random(seed);
         int worldWidth = world.length;
         int worldHeight = world[0].length;
