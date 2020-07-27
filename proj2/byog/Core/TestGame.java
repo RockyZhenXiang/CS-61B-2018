@@ -3,7 +3,6 @@ package byog.Core;
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
-import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -105,7 +104,7 @@ public class TestGame {
      * @param world: existing TETile[][] world
      * @param seed: seed used to create random object
      */
-    private static ArrayList<RectangluarRoom> addRandomRecRoom(TETile[][] world, int seed) {
+    private static ArrayList<Room> addRandomRecRoom(TETile[][] world, int seed) {
         final Random RANDOM = new Random(seed);
         int worldWidth = world.length;
         int worldHeight = world[0].length;
@@ -113,7 +112,7 @@ public class TestGame {
         int roomMaxWid = 15;
         int roomMaxHi = 10;
         int numberOfRoom = RandomUtils.uniform(RANDOM, 5,10);
-        ArrayList<RectangluarRoom> res = new ArrayList<>();
+        ArrayList<Room> res = new ArrayList<>();
 
         RectangluarRoom[] recRooms = new RectangluarRoom[1000];
         for (int i = 0; i < recRooms.length; i++) {
@@ -141,21 +140,69 @@ public class TestGame {
         return res;
     }
 
+    /**
+     * Connect rooms in the world
+     * @param world
+     * @param rooms
+     */
+    public static void connectAllRooms(TETile[][] world, ArrayList<Room> rooms) {
+        ArrayList<Room> connectedRooms = new ArrayList<>();
+        connectedRooms.add(rooms.get(0)); // adds the first room into connected rooms list
+        Random rand = new Random();
 
-    @Test
-    public void testEqual () {
-        ter.initialize(5, 5);
+        for (Room room: rooms) {
+            if (connectedRooms.contains(room)) {
+                continue;
+            }
+            int i = rand.nextInt(connectedRooms.size());
+            Room connectedRoom = connectedRooms.get(i);
+            Hallway hall = new Hallway(connectedRoom, room);
+            Hallway.drawHallWay(world, hall);
+            connectedRooms.add(room);
+        }
+    }
 
-        // initialize tiles
-        TETile[][] world = new TETile[WIDTH][HEIGHT];
-        for (int x = 0; x < WIDTH; x += 1) {
-            for (int y = 0; y < HEIGHT; y += 1) {
-                world[x][y] = Tileset.PLAYER;
+    /**
+     * If there is a floor tile in the 8-point stencil and itself is not a floor tile, then this block should be a wall tile
+     * @param world: TETile[][] world
+     * @param x: x coordinate
+     * @param y: y coordinate
+     * @return: if this tile should be a wall
+     */
+
+    private static boolean shallChangeToWall(TETile[][] world, int x, int y) {
+        if (world[x][y] == Tileset.FLOOR || world[x][y] == Tileset.WALL) {
+            return false;
+        }
+        for(int i = x-1; i <= x + 1 ; i ++) {
+            for(int j = y-1; j <= y + 1 ; j ++) {
+                if (world[i][j] == Tileset.FLOOR) {
+                    return true;
+                }
             }
         }
-
-        System.out.println(world[2][2] == Tileset.PLAYER);
+        return false;
     }
+
+    /**
+     * Add walls around all floor tiles in world
+     * if there is a floor tile in the 8-point stencil and itself is not a floor tile, then this block should be a wall tile
+     * @param world: TETile[][] world
+     */
+    public static void addWall(TETile[][] world) {
+        int width = world.length;
+        int height = world[0].length;
+
+        for (int i = 1; i < width - 1; i ++) {
+            for (int j = 1; j < height - 1; j ++) {
+                if (shallChangeToWall(world, i, j)) {
+                    world[i][j] = Tileset.WALL;
+                }
+            }
+        }
+    }
+
+
 
     public static void main(String[] args) {
         ter.initialize(WIDTH, HEIGHT);
@@ -168,27 +215,38 @@ public class TestGame {
             }
         }
 
-//        // add two rooms
-//        RectangluarRoom room1 = new RectangluarRoom(10, 10, 10, 10);
-//        RectangluarRoom room2 = new RectangluarRoom(30, 30, 10, 10);
-//        addRecRoom(world, room1);
-//        addRecRoom(world, room2);
-//
-//        // add a hallway
-//        Hallway hal1 = new Hallway(room1, room2);
-//        Hallway.drawHallWay(world, hal1);
+        /*
+        // add two rooms
+        RectangluarRoom room1 = new RectangluarRoom(10, 10, 10, 10);
+        RectangluarRoom room2 = new RectangluarRoom(30, 30, 10, 10);
+        addRecRoom(world, room1);
+        addRecRoom(world, room2);
 
+        // add a hallway
+        Hallway hal1 = new Hallway(room1, room2);
+        Hallway.drawHallWay(world, hal1);
+        */
 
         // add random rooms
         Random ran = new Random();
         int seed = ran.nextInt(10000);
-        ArrayList<RectangluarRoom> res = addRandomRecRoom(world, seed);
+        ArrayList<Room> res = addRandomRecRoom(world, seed);
 
+        // connect all rooms
+        connectAllRooms(world, res);
+
+        // add walls around hallways
+        addWall(world);
+
+        /*
         // add a hallway
         Hallway hal1 = new Hallway(res.get(0), res.get(1));
         Hallway.drawHallWay(world, hal1);
+        */
+
 
         // Draw the world
+
         ter.renderFrame(world);
     }
 }
