@@ -9,7 +9,7 @@ import java.awt.event.KeyEvent;
 public class StartingMenu {
     private int width;
     private int height;
-
+    private long seed;
 
     // Constructor
     public StartingMenu(int wid, int hei) {
@@ -62,7 +62,7 @@ public class StartingMenu {
                 if (typed == 'N' || typed == 'n') {
                     flag = false;
                     this.showInformation();
-                    this.readSeed();
+                    seed = this.readSeed();
                     break;
                 } else if (typed == 'L' || typed == 'l') {
                     System.out.println("Load Game");
@@ -121,5 +121,12 @@ public class StartingMenu {
         StdDraw.text((double) width / 2, (double) height / 2 + 5, "Press Enter if done.");
         StdDraw.text((double) width / 2, (double) height / 2, str);
         StdDraw.show();
+    }
+
+    /**
+     * returns seed to Game
+     */
+    public long getSeed() {
+        return seed;
     }
 }

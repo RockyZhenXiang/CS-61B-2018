@@ -6,7 +6,7 @@ import byog.TileEngine.Tileset;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class CreateWorldFromString {
+public class World {
     private static int width;
     private static int height;
 
@@ -223,6 +223,28 @@ public class CreateWorldFromString {
         // add walls around hallways
         addWall(world);
 
+
+        return world;
+    }
+
+    public static TETile[][] createWorldFromKeyboard(long seed, int worldWidth, int worldHeight) {
+
+        // initialize tiles
+        TETile[][] world = new TETile[worldWidth][worldHeight];
+        for (int x = 0; x < worldWidth; x += 1) {
+            for (int y = 0; y < worldHeight; y += 1) {
+                world[x][y] = Tileset.NOTHING;
+            }
+        }
+
+        // add random rooms
+        ArrayList<Room> res = addRandomRecRoom(world, seed);
+
+        // connect all rooms
+        connectAllRooms(world, res, seed);
+
+        // add walls around hallways
+        addWall(world);
 
         return world;
     }

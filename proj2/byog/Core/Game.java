@@ -16,9 +16,15 @@ public class Game {
      * Method used for playing a fresh game. The game should start from the main menu.
      */
     public void playWithKeyboard() {
+        ter.initialize(WIDTH, HEIGHT);
         StartingMenu stMenu = new StartingMenu(WIDTH, HEIGHT);
         stMenu.readKeyBoard();
+        long seed = stMenu.getSeed();
 
+        TETile[][] finalWorldFrame =
+                World.createWorldFromString(seed, WIDTH, HEIGHT);
+
+        ter.renderFrame(finalWorldFrame);
     }
 
     /**
@@ -51,7 +57,7 @@ public class Game {
             seed = 10 * seed + x;
         }
         TETile[][] finalWorldFrame =
-                CreateWorldFromString.createWorldFromString(seed, WIDTH, HEIGHT);
+                World.createWorldFromString(seed, WIDTH, HEIGHT);
         return finalWorldFrame;
     }
 }
