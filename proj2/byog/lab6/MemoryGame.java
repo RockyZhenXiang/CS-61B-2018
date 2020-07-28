@@ -94,7 +94,6 @@ public class MemoryGame {
     }
 
     public String solicitNCharsInput(int n) {
-
         StringBuilder stb = new StringBuilder();
         while (stb.length() < n) {
             while (StdDraw.hasNextKeyTyped()) {
