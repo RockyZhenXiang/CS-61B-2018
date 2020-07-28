@@ -1,11 +1,9 @@
 package byog.Core;
 
 import edu.princeton.cs.introcs.StdDraw;
-import edu.princeton.cs.introcs.StdOut;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Random;
+import java.awt.event.KeyEvent;
 
 
 public class StartingMenu {
@@ -62,8 +60,9 @@ public class StartingMenu {
             while (StdDraw.hasNextKeyTyped()) {
                 char typed = StdDraw.nextKeyTyped();
                 if (typed == 'N' || typed == 'n') {
-                    System.out.println("Create a new world");
                     flag = false;
+                    this.showInformation();
+                    this.readSeed();
                     break;
                 } else if (typed == 'L' || typed == 'l') {
                     System.out.println("Load Game");
@@ -76,5 +75,51 @@ public class StartingMenu {
                 }
             }
         }
+    }
+
+    /**
+     * Shows necessary info on the canvas
+     */
+    private void showInformation() {
+        StdDraw.clear(Color.black);
+        Font font = new Font("Monaco", Font.BOLD, 30);
+        StdDraw.setFont(font);
+        StdDraw.setPenColor(Color.white);
+        StdDraw.text((double) width / 2, (double) height / 2 + 10, "Please type in a seed (int) used to generate the world");
+        StdDraw.text((double) width / 2, (double) height / 2 + 5, "Press Enter if done.");
+        StdDraw.show();
+    }
+
+    /**
+     * reads seeds that is input by user
+     */
+    private long readSeed() {
+        long seed = 0;
+        while (true) {
+            while (StdDraw.hasNextKeyTyped()) {
+                if (StdDraw.isKeyPressed(KeyEvent.VK_ENTER)) {
+                    return seed;
+                }
+                char ch = StdDraw.nextKeyTyped();
+                if (Character.isDigit(ch)) {
+                    seed = 10 * seed + Character.getNumericValue(ch);
+                    this.showSeed(seed + "");
+                }
+            }
+        }
+    }
+
+    /**
+     * shows the seed that is inputted by the user
+     */
+    private void showSeed(String str) {
+        StdDraw.clear(Color.black);
+        Font font = new Font("Monaco", Font.BOLD, 30);
+        StdDraw.setFont(font);
+        StdDraw.setPenColor(Color.white);
+        StdDraw.text((double) width / 2, (double) height / 2 + 10, "Please type in a seed (int) used to generate the world");
+        StdDraw.text((double) width / 2, (double) height / 2 + 5, "Press Enter if done.");
+        StdDraw.text((double) width / 2, (double) height / 2, str);
+        StdDraw.show();
     }
 }
