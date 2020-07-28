@@ -7,8 +7,22 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class World {
-    private static int width;
-    private static int height;
+    protected static int width;
+    protected static int height;
+    protected static long seed;
+
+    /**
+     * Constructor
+     * @param se: seed to generate random world
+     * @param wid: width of the world
+     * @param hei: height of the world
+     */
+
+    public World(long se, int wid, int hei) {
+        seed = se;
+        width = wid;
+        height = hei;
+    }
 
     /**
      * check if the room can fit in the world
@@ -18,10 +32,8 @@ public class World {
      */
 
     private static boolean inbound(TETile[][] world, RoomAPI room) {
-        int worldWidth = world.length;
-        int worldHeight = world[0].length;
-        return !(room.width() + room.xLocation() > worldWidth
-                || room.yLocation() + room.height() > worldHeight);
+        return !(room.width() + room.xLocation() > width
+                || room.yLocation() + room.height() > height);
     }
 
     /**
@@ -40,33 +52,6 @@ public class World {
             }
         }
         return true;
-    }
-
-    /**
-     * add one rectangular room into a world
-     * @param world existing TETile[][] world
-     * @param x: x coordinate of the lower-left corner
-     * @param y: y coordinate of the lower-left corner
-     * @param wid: width of the room
-     * @param hi: height of the room
-     */
-    private static void addRecRoom(TETile[][] world, int x, int y, int wid, int hi) {
-        RectangluarRoom room = new RectangluarRoom(x, y, wid, hi);
-        if (!inbound(world, room) || !overlappedRoom(world, room)) {
-            return;
-        } else {
-            int w = room.width();
-            int h = room.height();
-            for (int xIndex = x; xIndex < w + x; xIndex++) {
-                for (int yIndex = y; yIndex < h + y; yIndex++) {
-                    if (xIndex == x || yIndex == y || xIndex == w + x - 1 || yIndex == h + y - 1) {
-                        world[xIndex][yIndex] = Tileset.WALL;
-                    } else {
-                        world[xIndex][yIndex] = Tileset.FLOOR;
-                    }
-                }
-            }
-        }
     }
 
     /**
@@ -137,8 +122,8 @@ public class World {
 
     /**
      * Connect rooms in the world
-     * @param world
-     * @param rooms
+     * @param world: TETile[][] world
+     * @param rooms: Array of rooms to be connected
      */
     public static void connectAllRooms(TETile[][] world, ArrayList<Room> rooms, long seed) {
         ArrayList<Room> connectedRooms = new ArrayList<>();
@@ -199,35 +184,31 @@ public class World {
         }
     }
 
+    /**
+     * place a player tile randomly and stores the location of player
+     * @param world: TETile[][] world object
+     * @return: the location of player tile
+     */
+
+    public void placePlayer(TETile[][] world, Player player) {
+        Random rand = new Random(seed);
+        while (true) {
+            int x = rand.nextInt(width);
+            int y = rand.nextInt(height);
+            if (world[x][y] == Tileset.FLOOR) {
+                world[x][y] = Tileset.PLAYER;
+                player.changeLocation(x,y);
+                break;
+            }
+        }
+    }
+
 
     /**
      * Creates a world with rooms and hallways with input seeds
      * @param seed : used to create a randomized world
      */
-    public static TETile[][] createWorldFromString(long seed, int worldWidth, int worldHeight) {
-
-        // initialize tiles
-        TETile[][] world = new TETile[worldWidth][worldHeight];
-        for (int x = 0; x < worldWidth; x += 1) {
-            for (int y = 0; y < worldHeight; y += 1) {
-                world[x][y] = Tileset.NOTHING;
-            }
-        }
-
-        // add random rooms
-        ArrayList<Room> res = addRandomRecRoom(world, seed);
-
-        // connect all rooms
-        connectAllRooms(world, res, seed);
-
-        // add walls around hallways
-        addWall(world);
-
-
-        return world;
-    }
-
-    public static TETile[][] createWorldFromKeyboard(long seed, int worldWidth, int worldHeight) {
+    public TETile[][] createWorld(long seed, int worldWidth, int worldHeight) {
 
         // initialize tiles
         TETile[][] world = new TETile[worldWidth][worldHeight];

@@ -2,7 +2,8 @@ package byog.Core;
 
 import edu.princeton.cs.introcs.StdDraw;
 
-import java.awt.*;
+import java.awt.Font;
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 
 
@@ -85,8 +86,10 @@ public class StartingMenu {
         Font font = new Font("Monaco", Font.BOLD, 30);
         StdDraw.setFont(font);
         StdDraw.setPenColor(Color.white);
-        StdDraw.text((double) width / 2, (double) height / 2 + 10, "Please type in a seed (int) used to generate the world");
-        StdDraw.text((double) width / 2, (double) height / 2 + 5, "Press Enter if done.");
+        StdDraw.text((double) width / 2, (double) height / 2 + 10,
+                "Please type in a seed (int) used to generate the world");
+        StdDraw.text((double) width / 2, (double) height / 2 + 5,
+                "Press Enter if done.");
         StdDraw.show();
     }
 
@@ -94,16 +97,16 @@ public class StartingMenu {
      * reads seeds that is input by user
      */
     private long readSeed() {
-        long seed = 0;
+        long tempSeed = 0;
         while (true) {
             while (StdDraw.hasNextKeyTyped()) {
                 if (StdDraw.isKeyPressed(KeyEvent.VK_ENTER)) {
-                    return seed;
+                    return tempSeed;
                 }
                 char ch = StdDraw.nextKeyTyped();
                 if (Character.isDigit(ch)) {
-                    seed = 10 * seed + Character.getNumericValue(ch);
-                    this.showSeed(seed + "");
+                    tempSeed = 10 * tempSeed + Character.getNumericValue(ch);
+                    this.showSeed(tempSeed + "");
                 }
             }
         }
@@ -117,8 +120,10 @@ public class StartingMenu {
         Font font = new Font("Monaco", Font.BOLD, 30);
         StdDraw.setFont(font);
         StdDraw.setPenColor(Color.white);
-        StdDraw.text((double) width / 2, (double) height / 2 + 10, "Please type in a seed (int) used to generate the world");
-        StdDraw.text((double) width / 2, (double) height / 2 + 5, "Press Enter if done.");
+        StdDraw.text((double) width / 2, (double) height / 2 + 10,
+                "Please type in a seed (int) used to generate the world");
+        StdDraw.text((double) width / 2, (double) height / 2 + 5,
+                "Press Enter if done.");
         StdDraw.text((double) width / 2, (double) height / 2, str);
         StdDraw.show();
     }

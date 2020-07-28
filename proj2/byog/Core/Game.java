@@ -21,8 +21,12 @@ public class Game {
         stMenu.readKeyBoard();
         long seed = stMenu.getSeed();
 
+        World world = new World(seed, WIDTH, HEIGHT);
         TETile[][] finalWorldFrame =
-                World.createWorldFromString(seed, WIDTH, HEIGHT);
+                world.createWorld(seed, WIDTH, HEIGHT);
+
+        Player player = new Player();
+        world.placePlayer(finalWorldFrame, player);
 
         ter.renderFrame(finalWorldFrame);
     }
@@ -56,8 +60,13 @@ public class Game {
         for (int x: seedList) {
             seed = 10 * seed + x;
         }
+
+        World world = new World(seed, WIDTH, HEIGHT);
         TETile[][] finalWorldFrame =
-                World.createWorldFromString(seed, WIDTH, HEIGHT);
+                world.createWorld(seed, WIDTH, HEIGHT);
+
+        Player player = new Player();
+        world.placePlayer(finalWorldFrame, player);
         return finalWorldFrame;
     }
 }
