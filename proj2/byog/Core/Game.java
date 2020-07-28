@@ -12,6 +12,7 @@ public class Game {
     public static final int WIDTH = 80;
     public static final int HEIGHT = 60;
     TERenderer ter = new TERenderer();
+    public boolean endGame = false;
 
     /**
      * Method used for playing a fresh game. The game should start from the main menu.
@@ -30,6 +31,8 @@ public class Game {
         world.placePlayer(finalWorldFrame, player);
 
         ter.renderFrame(finalWorldFrame);
+
+        statGameWithKeyboard(world, player);
     }
 
     /**
@@ -69,6 +72,22 @@ public class Game {
         Player player = new Player();
         world.placePlayer(finalWorldFrame, player);
         return finalWorldFrame;
+    }
+
+
+    public void statGameWithKeyboard(World world, Player player) {
+        while(!endGame){
+            while(StdDraw.hasNextKeyTyped()){
+                char typed = StdDraw.nextKeyTyped();
+                if (typed == 'W' || typed == 'w' ||
+                    typed == 'A' || typed == 'a' ||
+                    typed == 'S' || typed == 's' ||
+                    typed == 'D' || typed == 'd') {
+                    player.move(world, typed);
+                    ter.renderFrame(world.worldFrame);
+                }
+            }
+        }
     }
 
 }

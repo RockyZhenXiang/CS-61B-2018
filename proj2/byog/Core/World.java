@@ -10,6 +10,7 @@ public class World {
     protected static int width;
     protected static int height;
     protected static long seed;
+    public TETile[][] worldFrame;
 
     /**
      * Constructor
@@ -197,7 +198,7 @@ public class World {
             int y = rand.nextInt(height);
             if (world[x][y] == Tileset.FLOOR) {
                 world[x][y] = Tileset.PLAYER;
-                player.changeLocation(x,y);
+                player.changeLocation(x, y);
                 break;
             }
         }
@@ -226,6 +227,9 @@ public class World {
 
         // add walls around hallways
         addWall(world);
+
+        // set world
+        worldFrame = world;
 
         return world;
     }

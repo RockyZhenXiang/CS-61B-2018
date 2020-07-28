@@ -1,10 +1,15 @@
 package byog.Core;
 
-public class Player implements Moveable{
+import byog.TileEngine.TERenderer;
+import byog.TileEngine.TETile;
+import byog.TileEngine.Tileset;
+
+public class Player extends Movable {
     private int xLocation;
     private int yLocation;
-    public  int life;
-    public  int attack;
+    public int life;
+    public int attack;
+    public final TETile tile = Tileset.PLAYER;
 
     public Player(){
 
@@ -41,7 +46,36 @@ public class Player implements Moveable{
     }
 
     @Override
-    public void move() {
-
+    public void move(World world, char keyStroke) {
+        switch (keyStroke) {
+            case 'W': case 'w':
+                if (world.worldFrame[xLocation][yLocation + 1] != Tileset.WALL) {
+                    world.worldFrame[xLocation][yLocation] = Tileset.FLOOR;
+                    yLocation += 1;
+                    world.worldFrame[xLocation][yLocation] = tile;
+                }
+                break;
+            case 'A': case 'a':
+                if (world.worldFrame[xLocation - 1][yLocation] != Tileset.WALL) {
+                    world.worldFrame[xLocation][yLocation] = Tileset.FLOOR;
+                    xLocation -= 1;
+                    world.worldFrame[xLocation][yLocation] = tile;
+                }
+                break;
+            case 'S': case 's':
+                if (world.worldFrame[xLocation][yLocation - 1] != Tileset.WALL) {
+                    world.worldFrame[xLocation][yLocation] = Tileset.FLOOR;
+                    yLocation -= 1;
+                    world.worldFrame[xLocation][yLocation] = tile;
+                }
+                break;
+            case 'D': case 'd':
+                if (world.worldFrame[xLocation + 1][yLocation] != Tileset.WALL) {
+                    world.worldFrame[xLocation][yLocation] = Tileset.FLOOR;
+                    xLocation += 1;
+                    world.worldFrame[xLocation][yLocation] = tile;
+                }
+                break;
+        }
     }
 }
