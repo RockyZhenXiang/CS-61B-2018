@@ -4,7 +4,11 @@ import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import edu.princeton.cs.introcs.StdDraw;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class Game {
 
@@ -48,30 +52,90 @@ public class Game {
      * @return the 2D TETile[][] representing the state of the world
      */
     public TETile[][] playWithInputString(String input) {
+        String command;
+        boolean saveOrNot;
+        char[] inputArray = input.toCharArray();
+        long seed;
+        TETile[][] finalWorldFrame;
 
-        ArrayList<Integer> seedList = new ArrayList();
-        for (char ch: input.toCharArray()) {
-            if (Character.isDigit(ch)) {
-                seedList.add(Character.getNumericValue(ch));
+        if (inputArray[inputArray.length - 1] == 'Q') {
+            saveOrNot  = true;
+        }
+
+        if (inputArray[0] == 'N') {
+            seed = readSeedFromInput(inputArray);
+
+            if (seed == 0) {
+                throw new RuntimeException("Input needs to contain at least one digit");
+            }
+
+            World world = new World(seed, WIDTH, HEIGHT);
+            finalWorldFrame = world.createWorld(seed, WIDTH, HEIGHT);
+
+            Player player = new Player();
+            world.placePlayer(finalWorldFrame, player);
+
+            command = readCommand(inputArray);
+
+        } else { // inputArray[0] == 'L'
+            World world = loadGame();
+            command = readCommand(inputArray);
+
+            finalWorldFrame = world.worldFrame;
+        }
+
+        return finalWorldFrame;
+    }
+
+    /**
+     * reads a array of chars that only have a series of int, return the series of int
+     * @param inputArray: input array
+     * @return: seed contains in the array
+     */
+
+    private long readSeedFromInput (char[] inputArray) {
+        boolean lastDigit = false;
+        long seed = 0;
+        int i = 1;
+        char ch = inputArray[i];
+        while (!lastDigit) {
+            seed = seed * 10 + Character.getNumericValue(ch);
+            i += 1;
+            ch = inputArray[i];
+            if (ch == 'S') {
+                lastDigit = true;
             }
         }
 
-        if (seedList.size() == 0) {
-            throw new RuntimeException("Input needs to contain at least one digit");
+        return seed;
+    }
+
+    /**
+     * reads a array of chars that
+     * @param inputArray: input array
+     * @return: seed contains in the array
+     */
+    private String readCommand(char[] inputArray) {
+        boolean firstCommand = false;
+        int i = 0;
+        StringBuilder sb = new StringBuilder();
+        while (!firstCommand && i < inputArray.length) { // if the next one is a English letter, then it is a command
+            char ch = inputArray[i + 1];
+            if (Character.isLetter(ch)) {
+                firstCommand = true;
+            }
+            i += 1;
         }
-
-        long seed = 0;
-        for (int x: seedList) {
-            seed = 10 * seed + x;
+        // Now i + 1 is at the index of the first command
+        i += 1;
+        char lastTwo = inputArray[inputArray.length - 2];
+        while ((lastTwo == ':' && i < inputArray.length - 2) ||
+                lastTwo != ':' && i < inputArray.length) {
+            char ch = inputArray[i];
+            sb.append(ch);
+            i += 1;
         }
-
-        World world = new World(seed, WIDTH, HEIGHT);
-        TETile[][] finalWorldFrame =
-                world.createWorld(seed, WIDTH, HEIGHT);
-
-        Player player = new Player();
-        world.placePlayer(finalWorldFrame, player);
-        return finalWorldFrame;
+        return sb.toString();
     }
 
 
@@ -88,6 +152,16 @@ public class Game {
                 }
             }
         }
+    }
+
+    public World loadGame() {
+        // TODO: implement loading function
+
+        return new World();
+    }
+
+    public void saveGame() {
+        // TODO: implement saving function
     }
 
 }

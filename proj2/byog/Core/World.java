@@ -25,6 +25,10 @@ public class World {
         height = hei;
     }
 
+    // use for testing
+    public World() {
+    }
+
     /**
      * check if the room can fit in the world
      * @param world existing TETile[][] world

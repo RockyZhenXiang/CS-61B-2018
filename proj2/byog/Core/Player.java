@@ -1,6 +1,5 @@
 package byog.Core;
 
-import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
@@ -11,15 +10,14 @@ public class Player extends Movable {
     public int attack;
     public final TETile tile = Tileset.PLAYER;
 
-    public Player(){
 
-    }
 
     /**
      * Constructor
      * @param x: x coordinate
      * @param y: y coordinate
      */
+
     public Player(int x, int y) {
         xLocation = x;
         yLocation = y;
@@ -34,6 +32,8 @@ public class Player extends Movable {
         attack = atk;
     }
 
+    public Player(){
+    }
 
     /**
      * change the location of a player
