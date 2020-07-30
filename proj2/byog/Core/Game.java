@@ -70,17 +70,16 @@ public class Game {
             }
 
             World world = new World(seed, WIDTH, HEIGHT);
-            finalWorldFrame = world.createWorld(seed, WIDTH, HEIGHT);
-
-            Player player = new Player();
-            world.placePlayer(finalWorldFrame, player);
 
             command = readCommand(inputArray);
+            runningCommand(command, world);
+
+            finalWorldFrame = world.worldFrame;
 
         } else { // inputArray[0] == 'L'
             World world = loadGame();
-            command = readCommand(inputArray);
 
+            command = readCommand(inputArray);
             finalWorldFrame = world.worldFrame;
         }
 
@@ -138,6 +137,23 @@ public class Game {
         return sb.toString();
     }
 
+    /**
+     * Move a player in a world by a series of command
+     * @param command: series of WASD that moves the player
+     * @param world: TETtile[][] world
+     */
+    private void runningCommand(String command, World world) {
+        char[] commandArray = command.toCharArray();
+        for (char ch: commandArray) {
+            if (ch == 'W' || ch == 'w' ||
+                ch == 'A' || ch == 'a' ||
+                ch == 'S' || ch == 's' ||
+                ch == 'D' || ch == 'd') {
+                world.user.move(world, ch);
+            }
+        }
+    }
+
 
     public void statGameWithKeyboard(World world, Player player) {
         while(!endGame){
@@ -153,6 +169,7 @@ public class Game {
             }
         }
     }
+
 
     public World loadGame() {
         // TODO: implement loading function

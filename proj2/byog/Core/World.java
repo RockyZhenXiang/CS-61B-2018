@@ -11,6 +11,7 @@ public class World {
     protected static int height;
     protected static long seed;
     public TETile[][] worldFrame;
+    public Player user;
 
     /**
      * Constructor
@@ -23,6 +24,10 @@ public class World {
         seed = se;
         width = wid;
         height = hei;
+        worldFrame = createWorld(seed, width, height);
+        Player player = new Player();
+        placePlayer(worldFrame, player);
+        user = player;
     }
 
     // use for testing
@@ -196,6 +201,7 @@ public class World {
      */
 
     public void placePlayer(TETile[][] world, Player player) {
+        user = player;
         Random rand = new Random(seed);
         while (true) {
             int x = rand.nextInt(width);
