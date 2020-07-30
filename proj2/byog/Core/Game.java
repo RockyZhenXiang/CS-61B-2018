@@ -4,6 +4,7 @@ import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import edu.princeton.cs.introcs.StdDraw;
 
+import java.io.*;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,7 +54,7 @@ public class Game {
      */
     public TETile[][] playWithInputString(String input) {
         String command;
-        boolean saveOrNot;
+        boolean saveOrNot = false;
         char[] inputArray = input.toCharArray();
         long seed;
         TETile[][] finalWorldFrame;
@@ -76,11 +77,18 @@ public class Game {
 
             finalWorldFrame = world.worldFrame;
 
+            if (saveOrNot) {
+                saveGame(world);
+            }
+
         } else { // inputArray[0] == 'L'
             World world = loadGame();
 
             command = readCommand(inputArray);
             finalWorldFrame = world.worldFrame;
+            if (saveOrNot) {
+                saveGame(world);
+            }
         }
 
         return finalWorldFrame;
@@ -170,15 +178,43 @@ public class Game {
         }
     }
 
+    /**
+     * Stores World world object to file temp.txt
+     * @param world: Game world
+     */
+
+    public void saveGame(World world) {
+        try {
+            FileOutputStream fileOut = new FileOutputStream("temp.txt");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(world);
+            out.close();
+            fileOut.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
+    }
 
     public World loadGame() {
         // TODO: implement loading function
+        World world;
+        try {
+            FileInputStream fileIn = new FileInputStream("temp.txt");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            world = (World) in.readObject();
+            in.close();
+            fileIn.close();
+        }catch(IOException i) {
+            i.printStackTrace();
+            return null;
+        }catch(ClassNotFoundException c) {
+            System.out.println("Employee class not found");
+            c.printStackTrace();
+            return null;
+        }
 
-        return new World();
+        return world;
     }
 
-    public void saveGame() {
-        // TODO: implement saving function
-    }
 
 }

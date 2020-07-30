@@ -3,7 +3,7 @@ package byog.Core;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
-public class Player extends Movable {
+public class Player extends Movable{
     private int xLocation;
     private int yLocation;
     public int life;
