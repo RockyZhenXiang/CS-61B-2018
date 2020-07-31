@@ -55,11 +55,13 @@ public class Game {
         long seed;
         TETile[][] finalWorldFrame;
 
-        if (inputArray[inputArray.length - 1] == 'Q') {
+        if (inputArray[inputArray.length - 1] == 'Q' ||
+            inputArray[inputArray.length - 1] == 'q' ) {
             saveOrNot  = true;
         }
 
-        if (inputArray[0] == 'N') {
+        if (inputArray[0] == 'N' ||
+            inputArray[0] == 'n') {
             seed = readSeedFromInput(inputArray);
 
             if (seed == 0) {
@@ -96,9 +98,8 @@ public class Game {
     /**
      * reads a array of chars that only have a series of int, return the series of int
      * @param inputArray: input array
-     * @return: seed contains in the array
+     * @return : seed contains in the array
      */
-
     private long readSeedFromInput (char[] inputArray) {
         boolean lastDigit = false;
         long seed = 0;
@@ -108,7 +109,8 @@ public class Game {
             seed = seed * 10 + Character.getNumericValue(ch);
             i += 1;
             ch = inputArray[i];
-            if (ch == 'S') {
+            if (ch == 'S' ||
+                ch == 's') {
                 lastDigit = true;
             }
         }
@@ -119,7 +121,7 @@ public class Game {
     /**
      * reads a array of chars that
      * @param inputArray: input array
-     * @return: seed contains in the array
+     * @return : seed contains in the array
      */
     private String readCommand(char[] inputArray) {
         boolean firstCommand = false;
@@ -133,7 +135,8 @@ public class Game {
             i += 1;
         }
         // Now i + 1 is at the index of the first command
-        if (inputArray[0] == 'N') {
+        if (inputArray[0] == 'N' ||
+            inputArray[0] == 'n') {
             i += 1;
         }
         char lastTwo = inputArray[inputArray.length - 2];
