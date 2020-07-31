@@ -1,6 +1,6 @@
 package byog.Core;
 
-public class RectangluarRoom extends Room{
+public class RectangluarRoom extends Room {
     public RectangluarRoom(int x, int y, int wid, int hi) {
         xLocation = x;
         yLocation = y;

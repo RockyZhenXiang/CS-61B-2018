@@ -1,6 +1,6 @@
 package byog.Core;
 
-public abstract class Room implements RoomAPI{
+public abstract class Room implements RoomAPI {
     protected int xLocation;
     protected int yLocation;
     protected int[] centerLocation;

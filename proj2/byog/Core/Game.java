@@ -2,9 +2,10 @@ package byog.Core;
 
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
-import byog.TileEngine.Tileset;
+import edu.princeton.cs.introcs.StdDraw;
 
-import java.util.ArrayList;
+import java.io.*;
+
 
 public class Game {
 
@@ -12,11 +13,27 @@ public class Game {
     public static final int WIDTH = 80;
     public static final int HEIGHT = 60;
     TERenderer ter = new TERenderer();
+    public boolean endGame = false;
 
     /**
      * Method used for playing a fresh game. The game should start from the main menu.
      */
     public void playWithKeyboard() {
+        ter.initialize(WIDTH, HEIGHT);
+        StartingMenu stMenu = new StartingMenu(WIDTH, HEIGHT);
+        stMenu.readKeyBoard();
+        long seed = stMenu.getSeed();
+
+        World world = new World(seed, WIDTH, HEIGHT);
+        TETile[][] finalWorldFrame =
+                world.createWorld(seed, WIDTH, HEIGHT);
+
+        Player player = new Player();
+        world.placePlayer(finalWorldFrame, player);
+
+        ter.renderFrame(finalWorldFrame);
+
+        statGameWithKeyboard(world, player);
     }
 
     /**
@@ -32,26 +49,175 @@ public class Game {
      * @return the 2D TETile[][] representing the state of the world
      */
     public TETile[][] playWithInputString(String input) {
-        // TODO: Fill out this method to run the game using the input passed in,
-        // and return a 2D tile representation of the world that would have been
-        // drawn if the same inputs had been given to playWithKeyboard().
+        String command;
+        boolean saveOrNot = false;
+        char[] inputArray = input.toCharArray();
+        long seed;
+        TETile[][] finalWorldFrame;
 
-        ArrayList<Integer> seedList = new ArrayList();
-        for (char ch: input.toCharArray()) {
-            if (Character.isDigit(ch)) {
-                seedList.add(Character.getNumericValue(ch));
+        if (inputArray[inputArray.length - 1] == 'Q' ||
+            inputArray[inputArray.length - 1] == 'q' ) {
+            saveOrNot  = true;
+        }
+
+        if (inputArray[0] == 'N' ||
+            inputArray[0] == 'n') {
+            seed = readSeedFromInput(inputArray);
+
+            if (seed == 0) {
+                throw new RuntimeException("Input needs to contain at least one digit");
+            }
+
+            World world = new World(seed, WIDTH, HEIGHT);
+
+            command = readCommand(inputArray);
+            runningCommand(command, world);
+
+            finalWorldFrame = world.worldFrame;
+
+            if (saveOrNot) {
+                saveGame(world);
+            }
+
+        } else { // inputArray[0] == 'L'
+            World world = loadGame();
+
+            command = readCommand(inputArray);
+            runningCommand(command, world);
+
+            finalWorldFrame = world.worldFrame;
+
+            if (saveOrNot) {
+                saveGame(world);
             }
         }
 
-        if (seedList.size() == 0) {
-            throw new RuntimeException("Input needs to contain at least one digit");
-        }
-
-        int seed = 0;
-        for (int x: seedList) {
-            seed = 10 * seed + x;
-        }
-        TETile[][] finalWorldFrame = CreateWorld.createWorld(seed, WIDTH, HEIGHT, ter);
         return finalWorldFrame;
     }
+
+    /**
+     * reads a array of chars that only have a series of int, return the series of int
+     * @param inputArray: input array
+     * @return : seed contains in the array
+     */
+    private long readSeedFromInput (char[] inputArray) {
+        boolean lastDigit = false;
+        long seed = 0;
+        int i = 1;
+        char ch = inputArray[i];
+        while (!lastDigit) {
+            seed = seed * 10 + Character.getNumericValue(ch);
+            i += 1;
+            ch = inputArray[i];
+            if (ch == 'S' ||
+                ch == 's') {
+                lastDigit = true;
+            }
+        }
+
+        return seed;
+    }
+
+    /**
+     * reads a array of chars that
+     * @param inputArray: input array
+     * @return : seed contains in the array
+     */
+    private String readCommand(char[] inputArray) {
+        boolean firstCommand = false;
+        int i = 0;
+        StringBuilder sb = new StringBuilder();
+        while (!firstCommand && i < inputArray.length) { // if the next one is a English letter, then it is a command
+            char ch = inputArray[i + 1];
+            if (Character.isLetter(ch)) {
+                firstCommand = true;
+            }
+            i += 1;
+        }
+        // Now i + 1 is at the index of the first command
+        if (inputArray[0] == 'N' ||
+            inputArray[0] == 'n') {
+            i += 1;
+        }
+        char lastTwo = inputArray[inputArray.length - 2];
+        while ((lastTwo == ':' && i < inputArray.length - 2) ||
+                lastTwo != ':' && i < inputArray.length) {
+            char ch = inputArray[i];
+            sb.append(ch);
+            i += 1;
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Move a player in a world by a series of command
+     * @param command: series of WASD that moves the player
+     * @param world: TETtile[][] world
+     */
+    private void runningCommand(String command, World world) {
+        char[] commandArray = command.toCharArray();
+        for (char ch: commandArray) {
+            if (ch == 'W' || ch == 'w' ||
+                ch == 'A' || ch == 'a' ||
+                ch == 'S' || ch == 's' ||
+                ch == 'D' || ch == 'd') {
+                world.user.move(world, ch);
+            }
+        }
+    }
+
+
+    public void statGameWithKeyboard(World world, Player player) {
+        while(!endGame){
+            while(StdDraw.hasNextKeyTyped()){
+                char typed = StdDraw.nextKeyTyped();
+                if (typed == 'W' || typed == 'w' ||
+                    typed == 'A' || typed == 'a' ||
+                    typed == 'S' || typed == 's' ||
+                    typed == 'D' || typed == 'd') {
+                    player.move(world, typed);
+                    ter.renderFrame(world.worldFrame);
+                }
+            }
+        }
+    }
+
+    /**
+     * Stores World world object to file temp.txt
+     * @param world: Game world
+     */
+
+    public void saveGame(World world) {
+        try {
+            FileOutputStream fileOut = new FileOutputStream("temp.txt");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(world);
+            out.close();
+            fileOut.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
+    }
+
+    public World loadGame() {
+        World world;
+        try {
+            FileInputStream fileIn = new FileInputStream("temp.txt");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            world = (World) in.readObject();
+            in.close();
+            fileIn.close();
+        }catch(IOException i) {
+            i.printStackTrace();
+            return null;
+        }catch(ClassNotFoundException c) {
+            System.out.println("Employee class not found");
+            c.printStackTrace();
+            return null;
+        }
+
+        return world;
+    }
+
+
 }
