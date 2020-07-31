@@ -49,28 +49,28 @@ public class Player extends Movable{
     public void move(World world, char keyStroke) {
         switch (keyStroke) {
             case 'W': case 'w':
-                if (world.worldFrame[xLocation][yLocation + 1] != Tileset.WALL) {
+                if (!world.worldFrame[xLocation][yLocation + 1].description().equals("wall")) {
                     world.worldFrame[xLocation][yLocation] = Tileset.FLOOR;
                     yLocation += 1;
                     world.worldFrame[xLocation][yLocation] = tile;
                 }
                 break;
             case 'A': case 'a':
-                if (world.worldFrame[xLocation - 1][yLocation] != Tileset.WALL) {
+                if (!world.worldFrame[xLocation - 1][yLocation].description().equals("wall")) {
                     world.worldFrame[xLocation][yLocation] = Tileset.FLOOR;
                     xLocation -= 1;
                     world.worldFrame[xLocation][yLocation] = tile;
                 }
                 break;
             case 'S': case 's':
-                if (world.worldFrame[xLocation][yLocation - 1] != Tileset.WALL) {
+                if (!world.worldFrame[xLocation][yLocation - 1].description().equals("wall")) {
                     world.worldFrame[xLocation][yLocation] = Tileset.FLOOR;
                     yLocation -= 1;
                     world.worldFrame[xLocation][yLocation] = tile;
                 }
                 break;
             case 'D': case 'd':
-                if (world.worldFrame[xLocation + 1][yLocation] != Tileset.WALL) {
+                if (!world.worldFrame[xLocation + 1][yLocation].description().equals("wall")) {
                     world.worldFrame[xLocation][yLocation] = Tileset.FLOOR;
                     xLocation += 1;
                     world.worldFrame[xLocation][yLocation] = tile;

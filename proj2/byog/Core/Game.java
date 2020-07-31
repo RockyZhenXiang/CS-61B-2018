@@ -5,11 +5,7 @@ import byog.TileEngine.TETile;
 import edu.princeton.cs.introcs.StdDraw;
 
 import java.io.*;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+
 
 public class Game {
 
@@ -85,7 +81,10 @@ public class Game {
             World world = loadGame();
 
             command = readCommand(inputArray);
+            runningCommand(command, world);
+
             finalWorldFrame = world.worldFrame;
+
             if (saveOrNot) {
                 saveGame(world);
             }
@@ -134,7 +133,9 @@ public class Game {
             i += 1;
         }
         // Now i + 1 is at the index of the first command
-        i += 1;
+        if (inputArray[0] == 'N') {
+            i += 1;
+        }
         char lastTwo = inputArray[inputArray.length - 2];
         while ((lastTwo == ':' && i < inputArray.length - 2) ||
                 lastTwo != ':' && i < inputArray.length) {
@@ -196,7 +197,6 @@ public class Game {
     }
 
     public World loadGame() {
-        // TODO: implement loading function
         World world;
         try {
             FileInputStream fileIn = new FileInputStream("temp.txt");
