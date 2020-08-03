@@ -5,9 +5,11 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 import java.util.Arrays;
 
 public class Percolation {
-    boolean[][] grid;
-    int openedSite = 0;
-    WeightedQuickUnionUF dj;
+    private boolean[][] grid;
+    private int openedSite = 0;
+    private WeightedQuickUnionUF dj;
+
+
     /**
      * Constructor: create N-by-N grid, with all sites initially blocked
      * @param N length of the grid
@@ -17,7 +19,13 @@ public class Percolation {
             throw new IllegalArgumentException();
         }
         grid = new boolean[N][N];
-        dj = new WeightedQuickUnionUF(N*N);
+        dj = new WeightedQuickUnionUF(N * N + 2); // two additional node represents the sky and the core.
+        for (int i = 1; i < N + 1; i += 1) { // connect all top to the sky
+            dj.union(0,i);
+        }
+        for (int j = (N - 1) * N + 1; j < N * N + 2; j ++) {
+            dj.union(j, N * N + 1);
+        }
     }
 
     /**
@@ -28,7 +36,7 @@ public class Percolation {
      */
     private int xy2id(int row, int col) {
         int n = grid.length;
-        return row * n + col;
+        return row * n + col + 1;
     }
 
     /**
@@ -59,7 +67,9 @@ public class Percolation {
      * @return the id of the opened site surrounding [row, col]
      */
     private int[] neighborOpen(int row, int col) {
-        int n = grid.length;
+        if (!isInBound(row,col)) {
+            throw new IndexOutOfBoundsException(row + " " + col);
+        }
         int[][] check = new int[][]{new int[]{row, col + 1},
                                     new int[]{row, col - 1},
                                     new int[]{row + 1, col},
@@ -110,7 +120,14 @@ public class Percolation {
      * @return true if the site is full
      */
     public boolean isFull(int row, int col) {
+        if (!isInBound(row,col)) {
+            throw new IndexOutOfBoundsException(row + " " + col);
+        }
 
+        int myID = xy2id(row, col);
+        if (dj.connected(myID, 0) && isOpen(row, col)) {
+            return true;
+        }
         return false;
     }
 
@@ -132,10 +149,12 @@ public class Percolation {
 
 
     public static void main(String[] args) {
-        Percolation per = new Percolation(5);
-        per.open(2,3);
-        per.open(2,4);
-        per.open(5,2);
+        Percolation per = new Percolation(3);
+        per.open(0,0);
+        per.open(0,1);
+        per.open(2,2);
+        per.open(2,1);
+        per.open(1,1);
 
     }
 
