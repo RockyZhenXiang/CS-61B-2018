@@ -52,11 +52,11 @@ public class InteractivePercolationVisualizer {
                     }
                     perc.open(i, j);
                 }
-
                 // draw N-by-N percolation system
                 PercolationVisualizer.draw(perc, N);
             }
             StdDraw.show(DELAY);
+            System.out.println(perc.percolates());
         }
     }
 }

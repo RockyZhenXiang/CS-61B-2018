@@ -143,19 +143,25 @@ public class Percolation {
      * @return if the system percolate?
      */
     public boolean percolates() {
-
-        return false;
+        int n = grid.length;
+        return dj.connected(0, n * n + 1);
     }
 
 
     public static void main(String[] args) {
-        Percolation per = new Percolation(3);
+        Percolation per = new Percolation(10);
         per.open(0,0);
-        per.open(0,1);
-        per.open(2,2);
-        per.open(2,1);
-        per.open(1,1);
-
+        per.open(1,0);
+        per.open(2,0);
+        per.open(3,0);
+        System.out.println(per.percolates());
+        per.open(4,0);
+        per.open(5,0);
+        per.open(6,0);
+        per.open(7,0);
+        per.open(8,0);
+        System.out.println(per.percolates());
+        per.open(9,0);
+        System.out.println(per.percolates());
     }
-
 }
