@@ -8,7 +8,7 @@ public class Percolation {
     private boolean[][] grid;
     private int openedSite = 0;
     private WeightedQuickUnionUF dj;
-    private boolean percolateFlag;
+    private WeightedQuickUnionUF fullOrNot; // used to decide if the tile is full
 
 
     /**
@@ -20,9 +20,17 @@ public class Percolation {
             throw new IllegalArgumentException();
         }
         grid = new boolean[N][N];
-        dj = new WeightedQuickUnionUF(N * N + 1); // one additional node  at the front represents the top.
+        fullOrNot = new WeightedQuickUnionUF(N * N + 1); // one additional node represents the sky and the core.
+        for (int i = 1; i < N + 1; i += 1) { // connect all top to the sky
+            fullOrNot.union(0,i);
+        }
+
+        dj = new WeightedQuickUnionUF(N * N + 2); // two additional node represents the sky and the core.
         for (int i = 1; i < N + 1; i += 1) { // connect all top to the sky
             dj.union(0,i);
+        }
+        for (int j = (N - 1) * N + 1; j < N * N + 2; j ++) {
+            dj.union(j, N * N + 1);
         }
     }
 
@@ -43,9 +51,6 @@ public class Percolation {
      * @param col x coordinate of the tile
      */
     public void open(int row, int col) {
-        if (!isInBound(row,col)) {
-            throw new IndexOutOfBoundsException(row + " " + col);
-        }
         if (!isOpen(row, col)) {
             grid[row][col] = true;
             if (openedSite != 0) {
@@ -53,13 +58,8 @@ public class Percolation {
                 for (int id: openedNei) {
                    if (id >= 0) {
                        dj.union(xy2id(row, col), id);
+                       fullOrNot.union(xy2id(row, col), id);
                    }
-                }
-            }
-            if (row == grid.length - 1 && !percolateFlag) {
-                int myID = xy2id(row, col);
-                if (dj.connected(0, myID)) {
-                    percolateFlag = true;
                 }
             }
             openedSite += 1;
@@ -130,10 +130,13 @@ public class Percolation {
         if (!isInBound(row,col)) {
             throw new IndexOutOfBoundsException(row + " " + col);
         }
-        int myID = xy2id(row, col);
-        return dj.connected(myID, 0) && isOpen(row, col);
-    }
 
+        int myID = xy2id(row, col);
+        if (fullOrNot.connected(myID, 0) && isOpen(row, col)) {
+            return true;
+        }
+        return false;
+    }
 
     /**
      * @return number of open sites
@@ -147,11 +150,12 @@ public class Percolation {
      * @return if the system percolate?
      */
     public boolean percolates() {
-        return percolateFlag;
+        int n = grid.length;
+        return dj.connected(0, n * n + 1);
     }
 
 
-    private static void main(String[] args) {
+    public static void main(String[] args) {
         Percolation per = new Percolation(10);
         per.open(0,0);
         per.open(1,0);
