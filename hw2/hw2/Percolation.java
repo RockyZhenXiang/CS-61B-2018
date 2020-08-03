@@ -8,6 +8,7 @@ public class Percolation {
     private boolean[][] grid;
     private int openedSite = 0;
     private WeightedQuickUnionUF dj;
+    private WeightedQuickUnionUF fullOrNot; // used to decide if the tile is full
 
 
     /**
@@ -19,6 +20,11 @@ public class Percolation {
             throw new IllegalArgumentException();
         }
         grid = new boolean[N][N];
+        fullOrNot = new WeightedQuickUnionUF(N * N + 1); // one additional node represents the sky and the core.
+        for (int i = 1; i < N + 1; i += 1) { // connect all top to the sky
+            fullOrNot.union(0,i);
+        }
+
         dj = new WeightedQuickUnionUF(N * N + 2); // two additional node represents the sky and the core.
         for (int i = 1; i < N + 1; i += 1) { // connect all top to the sky
             dj.union(0,i);
@@ -52,6 +58,7 @@ public class Percolation {
                 for (int id: openedNei) {
                    if (id >= 0) {
                        dj.union(xy2id(row, col), id);
+                       fullOrNot.union(xy2id(row, col), id);
                    }
                 }
             }
@@ -125,7 +132,7 @@ public class Percolation {
         }
 
         int myID = xy2id(row, col);
-        if (dj.connected(myID, 0) && isOpen(row, col)) {
+        if (fullOrNot.connected(myID, 0) && isOpen(row, col)) {
             return true;
         }
         return false;
