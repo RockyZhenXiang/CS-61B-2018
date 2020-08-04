@@ -1,8 +1,9 @@
 package hw3.hash;
 
-import edu.princeton.cs.algs4.LinkedQueue;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.List;
 
 public class OomageTestUtility {
     public static boolean haveNiceHashCodeSpread(List<Oomage> oomages, int M) {
