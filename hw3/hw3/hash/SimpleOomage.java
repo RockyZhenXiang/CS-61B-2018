@@ -26,8 +26,38 @@ public class SimpleOomage implements Oomage {
         if (!USE_PERFECT_HASH) {
             return red + green + blue;
         } else {
-            String code = red + "" + green + "" + blue;
-            return Integer.parseInt(code);
+            int r = red / 5;
+            int g = green / 5;
+            int b = blue / 5;
+            String rs;
+            String gs;
+            String bs;
+
+            if (r < 10) {
+                rs = "00" + r;
+            } else if (r < 100) {
+                rs = "0" + r;
+            } else {
+                rs = "" + r;
+            }
+
+            if (g < 10) {
+                gs = "00" + g;
+            } else if (r < 100) {
+                gs = "0" + g;
+            } else {
+                gs = "" + g;
+            }
+
+            if (b < 10) {
+                bs = "00" + b;
+            } else if (b < 100) {
+                bs = "0" + b;
+            } else {
+                bs = "" + b;
+            }
+
+            return Integer.parseInt(rs + gs + bs);
         }
     }
 
