@@ -22,15 +22,15 @@ public class Percolation {
         // one additional node represents the sky and the core.
         fullOrNot = new WeightedQuickUnionUF(N * N + 1);
         for (int i = 1; i < N + 1; i += 1) { // connect all top to the sky
-            fullOrNot.union(0,i);
+            fullOrNot.union(0, i);
         }
 
         // two additional node represents the sky and the core.
         dj = new WeightedQuickUnionUF(N * N + 2);
         for (int i = 1; i < N + 1; i += 1) { // connect all top to the sky
-            dj.union(0,i);
+            dj.union(0, i);
         }
-        for (int j = (N - 1) * N + 1; j < N * N + 2; j ++) {
+        for (int j = (N - 1) * N + 1; j < N * N + 2; j++) {
             dj.union(j, N * N + 1);
         }
     }
@@ -57,10 +57,10 @@ public class Percolation {
             if (openedSite != 0) {
                 int [] openedNei = neighborOpen(row, col);
                 for (int id: openedNei) {
-                   if (id >= 0) {
-                       dj.union(xy2id(row, col), id);
-                       fullOrNot.union(xy2id(row, col), id);
-                   }
+                    if (id >= 0) {
+                        dj.union(xy2id(row, col), id);
+                        fullOrNot.union(xy2id(row, col), id);
+                    }
                 }
             }
             openedSite += 1;
@@ -75,14 +75,14 @@ public class Percolation {
      * @return the id of the opened site surrounding [row, col]
      */
     private int[] neighborOpen(int row, int col) {
-        if (!isInBound(row,col)) {
+        if (!isInBound(row, col)) {
             throw new IndexOutOfBoundsException(row + " " + col);
         }
         int[][] check = new int[][]{new int[]{row, col + 1},
                                     new int[]{row, col - 1},
                                     new int[]{row + 1, col},
                                     new int[]{row - 1, col}};
-        int[] res = new int[]{-1, -1 ,-1 ,-1};
+        int[] res = new int[]{-1, -1, -1, -1};
         for (int i = 0; i < 4; i += 1) {
             if (isInBound(check[i][0], check[i][1])) {
                 if (isOpen(check[i][0], check[i][1])) {
@@ -101,7 +101,7 @@ public class Percolation {
      * @return true if the site is open
      */
     public boolean isOpen(int row, int col) {
-        if (!isInBound(row,col)) {
+        if (!isInBound(row, col)) {
             throw new IndexOutOfBoundsException(row + " " + col);
         }
 
@@ -116,8 +116,8 @@ public class Percolation {
      */
     private boolean isInBound(int row, int col) {
 
-        return row < grid.length && row >= 0 &&
-                col < grid.length && col >= 0;
+        return  row < grid.length && row >= 0
+                && col < grid.length && col >= 0;
     }
 
 
@@ -128,7 +128,7 @@ public class Percolation {
      * @return true if the site is full
      */
     public boolean isFull(int row, int col) {
-        if (!isInBound(row,col)) {
+        if (!isInBound(row, col)) {
             throw new IndexOutOfBoundsException(row + " " + col);
         }
 
@@ -160,19 +160,6 @@ public class Percolation {
 
 
     public static void main(String[] args) {
-        Percolation per = new Percolation(10);
-        per.open(0,0);
-        per.open(1,0);
-        per.open(2,0);
-        per.open(3,0);
-        System.out.println(per.percolates());
-        per.open(4,0);
-        per.open(5,0);
-        per.open(6,0);
-        per.open(7,0);
-        per.open(8,0);
-        System.out.println(per.percolates());
-        per.open(9,0);
-        System.out.println(per.percolates());
+
     }
 }
