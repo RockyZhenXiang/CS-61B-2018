@@ -2,8 +2,6 @@ package hw2;
 
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
-import java.util.Arrays;
-
 public class Percolation {
     private boolean[][] grid;
     private int openedSite = 0;
@@ -20,12 +18,15 @@ public class Percolation {
             throw new IllegalArgumentException();
         }
         grid = new boolean[N][N];
-        fullOrNot = new WeightedQuickUnionUF(N * N + 1); // one additional node represents the sky and the core.
+
+        // one additional node represents the sky and the core.
+        fullOrNot = new WeightedQuickUnionUF(N * N + 1);
         for (int i = 1; i < N + 1; i += 1) { // connect all top to the sky
             fullOrNot.union(0,i);
         }
 
-        dj = new WeightedQuickUnionUF(N * N + 2); // two additional node represents the sky and the core.
+        // two additional node represents the sky and the core.
+        dj = new WeightedQuickUnionUF(N * N + 2);
         for (int i = 1; i < N + 1; i += 1) { // connect all top to the sky
             dj.union(0,i);
         }
@@ -151,6 +152,9 @@ public class Percolation {
      */
     public boolean percolates() {
         int n = grid.length;
+        if (openedSite < n) {
+            return false;
+        }
         return dj.connected(0, n * n + 1);
     }
 

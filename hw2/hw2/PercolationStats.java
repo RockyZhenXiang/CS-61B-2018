@@ -5,9 +5,8 @@ import edu.princeton.cs.algs4.StdStats;
 
 public class PercolationStats {
 
-    double [] perThresholds;
-    int times;
-    int len;
+    private double [] perThresholds;
+    private int times;
     /**
      * perform T independent experiments on an N-by-N grid
      * @param N size of the grid
@@ -15,13 +14,12 @@ public class PercolationStats {
      * @param pf Percolation object
      */
     public PercolationStats(int N, int T, PercolationFactory pf) {
-        if (N < 0 || T < 0) {
+        if (N <= 0 || T <= 0) {
             throw new IllegalArgumentException();
         }
 
         perThresholds = new double[T];
         times = T;
-        len = N;
         for (int i = 0; i < T; i += 1) {
             Percolation pl = pf.make(N);
 
@@ -46,18 +44,21 @@ public class PercolationStats {
     }                                       // sample standard deviation of percolation threshold
     public double confidenceLow() {
 
-        return (mean() - 1.96 * stddev()) / Math.sqrt(times);
+        return mean() - 1.96 * stddev() / Math.sqrt(times);
     }// low endpoint of 95% confidence interval
 
     public double confidenceHigh() {
-        return (mean() + 1.96 * stddev()) / Math.sqrt(times);
+        return mean() + 1.96 * stddev() / Math.sqrt(times);
     }                                // high endpoint of 95% confidence interval
 
     private static void main(String[] args) {
-        int N = 1000;
-        int T = 30;
+        int N = 20;
+        int T = 10;
         PercolationFactory pf = new PercolationFactory();
         PercolationStats ps = new PercolationStats(N, T, pf);
-        System.out.println(ps.mean());
+        System.out.println("Low = " + ps.confidenceLow());
+        System.out.println("Mean = " + ps.mean());
+        System.out.println("Stddev = " + ps.stddev());
+        System.out.println("T = " + ps.times);
     }
 }
