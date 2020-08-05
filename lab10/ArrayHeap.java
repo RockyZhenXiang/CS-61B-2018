@@ -24,15 +24,16 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
     }
 
     /**
-     * Returns the index of the node to the left of the node at i.
+     * Returns the index of the left child of the node at i.
      */
     private static int leftIndex(int i) {
         /* TODO: Your code here! */
+
         return 0;
     }
 
     /**
-     * Returns the index of the node to the right of the node at i.
+     * Returns the index of the right child of the node at i.
      */
     private static int rightIndex(int i) {
         /* TODO: Your code here! */
