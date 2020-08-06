@@ -1,6 +1,7 @@
 package hw4.puzzle;
 
 import edu.princeton.cs.algs4.Queue;
+import org.junit.Test;
 
 import java.util.Arrays;
 
@@ -89,14 +90,34 @@ public final class Board implements WorldState{
         return sum;
     }
     public int manhattan() {
-        return  0;
+        int sum = 0;
+        for (int row = 0; row < size; row += 1) {
+            for (int col = 0; col < size; col += 1) {
+                int id = tileAt(row, col);
+                if (id != 0) {
+                    int[] target = id2xy(id);
+                    sum += Math.abs(row - target[0]) + Math.abs(col - target[1]);
+                }
+            }
+        }
+
+        return sum;
     }
+
 
     private int xy21D(int row, int col) {
         return row * size + col + 1;
     }
+
+    private int[] id2xy(int id) {
+        id -= 1;
+        int row = id / size;
+        int col = id - row * size;
+
+        return new int[]{row, col};
+    }
     public int estimatedDistanceToGoal() {
-        return hamming();
+        return manhattan();
     }
 
     @Override
