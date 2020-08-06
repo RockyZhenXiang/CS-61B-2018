@@ -71,12 +71,6 @@ public class CommonBugDetector {
 
 
     public static void main(String[] args) {
-        CommonBugPuzzleState cbps = new CommonBugPuzzleState();
-        Solver s = new Solver(cbps);
-
-        // s.moves() should be 5
-        System.out.println("s.moves() should be 5, and your s.moves() is: " + s.moves());
-
         AlphabetEasyPuzzle aep = new AlphabetEasyPuzzle('a');
         Solver s3 = new Solver(aep);
         System.out.println("TODO: Print out the number of total things ever"

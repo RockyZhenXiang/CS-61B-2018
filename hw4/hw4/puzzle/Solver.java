@@ -65,9 +65,7 @@ public class Solver {
      */
     private WorldState grand(SearchNode node) {
         if (node.myParent != null) {
-            if (node.myParent.myParent != null) {
-                return node.myParent.myParent.myWorldState;
-            }
+            return node.myParent.myWorldState;
         }
         return null;
     }
