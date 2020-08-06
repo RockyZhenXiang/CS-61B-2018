@@ -1,11 +1,11 @@
 package hw4.puzzle;
 
 import edu.princeton.cs.algs4.Queue;
-import org.junit.Test;
+
 
 import java.util.Arrays;
 
-public final class Board implements WorldState{
+public class Board implements WorldState {
 
     private final int size;
     private final int[][] boardStatus;
@@ -23,7 +23,7 @@ public final class Board implements WorldState{
     }
     public int tileAt(int i, int j) {
         int n = boardStatus.length;
-        if (i < 0 || i > n - 1 || j < 0 || j > n - 1 ) {
+        if (i < 0 || i > n - 1 || j < 0 || j > n - 1) {
             throw new IndexOutOfBoundsException();
         }
         if (boardStatus[i][j] == 0) {
@@ -135,13 +135,18 @@ public final class Board implements WorldState{
         return Arrays.deepEquals(this.boardStatus, ((Board) y).boardStatus);
     }
 
+    @Override
+    public int hashCode(){
+        return size ;
+    }
+
     public String toString() {
         StringBuilder s = new StringBuilder();
         int N = size();
         s.append(N + "\n");
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                s.append(String.format("%2d ", tileAt(i,j)));
+                s.append(String.format("%2d ", tileAt(i, j)));
             }
             s.append("\n");
         }

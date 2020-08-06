@@ -2,11 +2,13 @@ package hw4.puzzle;
 
 import edu.princeton.cs.algs4.MinPQ;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 
 public class Solver {
 
-    private static class SearchNode implements Comparable<SearchNode>{
+    private static class SearchNode implements Comparable<SearchNode> {
         private WorldState myWorldState;
         private int moves;
         private int cost;
@@ -36,11 +38,11 @@ public class Solver {
         minPQ.insert(first);
         solWorlds = new ArrayDeque<>();
 
-        while(!minPQ.isEmpty()) {
+        while (!minPQ.isEmpty()) {
             SearchNode candidate = minPQ.delMin();
             if (candidate.myWorldState.isGoal()) {
                 minMove = candidate.moves;
-                while(candidate != null) {
+                while (candidate != null) {
                     solWorlds.addFirst(candidate.myWorldState);
                     candidate = candidate.myParent;
                 }
