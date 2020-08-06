@@ -137,7 +137,7 @@ public class Board implements WorldState {
 
     @Override
     public int hashCode(){
-        return size ;
+        return size;
     }
 
     public String toString() {
