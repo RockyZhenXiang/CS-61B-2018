@@ -29,7 +29,6 @@ public class Solver {
     private MinPQ<SearchNode> minPQ;
     private Deque<WorldState> solWorlds;
     private int minMove;
-    public int test;
 
     public Solver(WorldState initial) {
         SearchNode first = new SearchNode(initial, 0, null);
@@ -51,7 +50,6 @@ public class Solver {
                     if (!nei.equals(grand(candidate))) {
                         SearchNode neiNode = new SearchNode(nei, candidate.moves + 1, candidate);
                         minPQ.insert(neiNode);
-                        test += 1;
                     }
                 }
             }
