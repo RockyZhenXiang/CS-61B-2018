@@ -18,6 +18,6 @@ public class EightPuzzleSolver {
         StdOut.println("Minimum number of moves = " + solver.moves());
         for (WorldState ws : solver.solution()) {
             StdOut.println(ws);
-        }
+            }
         }
 }
