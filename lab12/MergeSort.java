@@ -78,7 +78,9 @@ public class MergeSort {
     /** Returns a Queue that contains the given items sorted from least to greatest. */
     public static <Item extends Comparable> Queue<Item> mergeSort(
             Queue<Item> items) {
-        // Your code here!
+        if (items.size() < 2) {
+            return items;
+        }
         Queue<Queue<Item>> single = makeSingleItemQueues(items);
         while (single.size() > 1) {
             Queue<Item> first = single.dequeue();
@@ -114,6 +116,12 @@ public class MergeSort {
         System.out.println(test.toString());
         System.out.println(test2.toString());
         System.out.println(mergeSortedQueues(test, test2).toString());
+    }
+
+    @Test
+    public void testZeroLength() {
+        Queue<Integer> test = new Queue<>();
+        System.out.println(mergeSort(test).toString());
     }
 
     public static void main(String[] args) {
