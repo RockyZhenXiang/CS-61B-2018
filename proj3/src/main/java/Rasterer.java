@@ -89,7 +89,7 @@ public class Rasterer {
     private int getXValue(double lon, int dep) {
         double[] boundaries = new double[(int) Math.pow(2, dep) + 1];
         boundaries[0] = MapServer.ROOT_ULLON;
-        for (int i = 1; i < boundaries.length + 1; i += 1) {
+        for (int i = 1; i < boundaries.length; i += 1) {
             double gap = (MapServer.ROOT_LRLON - MapServer.ROOT_ULLON)
                     * i / Math.pow(2, dep);
             boundaries[i] = MapServer.ROOT_ULLON + gap;
@@ -102,8 +102,17 @@ public class Rasterer {
     }
 
     private int getYValue(double lat, int dep) {
-
-        return 0;
+        double[] boundaries = new double[(int) Math.pow(2, dep) + 1];
+        boundaries[0] = MapServer.ROOT_ULLAT;
+        for (int i = 1; i < boundaries.length; i += 1) {
+            double gap = (MapServer.ROOT_LRLAT - MapServer.ROOT_ULLAT)
+                    * i / Math.pow(2, dep);
+            boundaries[i] = MapServer.ROOT_ULLAT + gap;
+            if (boundaries[i - 1] >= lat && lat > boundaries[i]) {
+                return i - 1;
+            }
+        }
+        return -1;
     }
 
     private int depthLevel(Map<String, Double> params) {
