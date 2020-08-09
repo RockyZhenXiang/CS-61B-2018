@@ -55,7 +55,10 @@ public class Rasterer {
         double lrlat  = params.get("lrlat");
 
         int d = depthLevel(params);
-        String[][] test = new String[][]{{"d0_x0_y0.png"}};
+
+        int[] upperLeftIndex = getUpperLeftFigure(ullon, ullat, d);
+        String ul = "d" + d + "_x" + upperLeftIndex[0] + "_y" + upperLeftIndex[1] + ".png";
+        String[][] test = new String[][]{{ul}};
 
         results.put("render_grid", test);
         results.put("raster_ul_lon", ullon);
@@ -68,6 +71,41 @@ public class Rasterer {
         return results;
     }
 
+    /**
+     * @param lon longitude of the upper left corner of the whole picture
+     * @param lat latitude of the upper left corner of the whole picture
+     * @return int[x, y] of the upper left corner
+     */
+    private int[] getUpperLeftFigure(double lon, double lat, int dep) {
+        int x = getXValue(lon, dep);
+        int y = getYValue(lat, dep);
+        if (x == -1 || y == -1) {
+            throw new RuntimeException("getUpperLeftFigure() has a bug, " +
+                    "x = " + x + " y = " + y);
+        }
+        return new int[]{x, y};
+    }
+
+    private int getXValue(double lon, int dep) {
+        double[] boundaries = new double[(int) Math.pow(2, dep) + 1];
+        boundaries[0] = MapServer.ROOT_ULLON;
+        for (int i = 1; i < boundaries.length + 1; i += 1) {
+            double gap = (MapServer.ROOT_LRLON - MapServer.ROOT_ULLON)
+                    * i / Math.pow(2, dep);
+            boundaries[i] = MapServer.ROOT_ULLON + gap;
+            if (boundaries[i - 1] < lon && lon <= boundaries[i]) {
+                return i - 1;
+            }
+        }
+
+        return -1;
+    }
+
+    private int getYValue(double lat, int dep) {
+
+        return 0;
+    }
+
     private int depthLevel(Map<String, Double> params) {
 
         double lrlon  = params.get("lrlon");
@@ -76,7 +114,7 @@ public class Rasterer {
 
         double expectedLonDPP = (lrlon - ullon) / w;
         // From d0_x0_y0.png
-        double currentLonDpp = (-122.21191 + 122.2998) / 256;
+        double currentLonDpp = (MapServer.ROOT_LRLON - MapServer.ROOT_ULLON) / MapServer.TILE_SIZE;
         int currentDepth = 0;
         while (currentLonDpp > expectedLonDPP && currentDepth < 7) {
             currentLonDpp /= 2;
