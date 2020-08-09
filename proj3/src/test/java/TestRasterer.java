@@ -44,6 +44,7 @@ public class TestRasterer {
             String msg = "Your results did not match the expected results for input "
                          + mapToString(params) + ".\n";
             checkParamsMap(msg, expected, actual);
+            System.out.println(String.format("Passed test: %d", i));
         }
     }
 

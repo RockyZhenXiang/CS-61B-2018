@@ -57,16 +57,18 @@ public class Rasterer {
 
         int[] ulId = getUpperLeftValue(ullon, ullat, d);
         int[] lrId = getLowerRightValue(lrlon, lrlat, d);
-        String[][] test = new String[lrId[0] - ulId[0] + 1][lrId[1] - ulId[1] + 1];
-        for (int i = ulId[1]; i <= lrId[1]; i += 1) {
+        String[][] test = new String[lrId[1] - ulId[1] + 1][lrId[0] - ulId[0] + 1];
+        System.out.println(test.length);
+        System.out.println(test[0].length);
+        for (int i = ulId[0]; i <= lrId[0]; i += 1) {
             if (i == -1) {
                 success = false;
             }
-            for (int j = ulId[0]; j <= lrId[0]; j += 1) {
+            for (int j = ulId[1]; j <= lrId[1]; j += 1) {
                 if (j == -1) {
                     success = false;
                 }
-                test[i - ulId[1]][j - ulId[0]] = "d" + d + "_x" + j + "_y" + i + ".png";
+                test[j - ulId[1]][i - ulId[0]] = "d" + d + "_x" + i + "_y" + j + ".png";
             }
         }
 
