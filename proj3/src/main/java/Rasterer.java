@@ -11,6 +11,7 @@ public class Rasterer {
 
     public Rasterer() {
         // YOUR CODE HERE
+
     }
 
     /**
@@ -42,11 +43,46 @@ public class Rasterer {
      *                    forget to set this to true on success! <br>
      */
     public Map<String, Object> getMapRaster(Map<String, Double> params) {
-        // System.out.println(params);
+        System.out.println(params);
         Map<String, Object> results = new HashMap<>();
-        System.out.println("Since you haven't implemented getMapRaster, nothing is displayed in "
-                           + "your browser.");
+
+        // reads input
+        double lrlon  = params.get("lrlon");
+        double ullon  = params.get("ullon");
+        double w  = params.get("w");
+        double h  = params.get("h");
+        double ullat  = params.get("ullat");
+        double lrlat  = params.get("lrlat");
+
+        int d = depthLevel(params);
+        String[][] test = new String[][]{{"d0_x0_y0.png"}};
+
+        results.put("render_grid", test);
+        results.put("raster_ul_lon", ullon);
+        results.put("raster_ul_lat", ullat);
+        results.put("raster_lr_lon", lrlon);
+        results.put("raster_lr_lat", lrlat);
+        results.put("depth", d);
+        results.put("query_success", true);
+
         return results;
+    }
+
+    private int depthLevel(Map<String, Double> params) {
+
+        double lrlon  = params.get("lrlon");
+        double ullon  = params.get("ullon");
+        double w  = params.get("w");
+
+        double expectedLonDPP = (lrlon - ullon) / w;
+        // From d0_x0_y0.png
+        double currentLonDpp = (-122.21191 + 122.2998) / 256;
+        int currentDepth = 0;
+        while (currentLonDpp > expectedLonDPP && currentDepth < 7) {
+            currentLonDpp /= 2;
+            currentDepth += 1;
+        }
+        return currentDepth;
     }
 
 }
