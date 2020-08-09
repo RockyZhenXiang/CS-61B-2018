@@ -45,6 +45,7 @@ public class Rasterer {
     public Map<String, Object> getMapRaster(Map<String, Double> params) {
         System.out.println(params);
         Map<String, Object> results = new HashMap<>();
+        boolean success = true;
 
         // reads input
         double lrlon  = params.get("lrlon");
@@ -58,18 +59,32 @@ public class Rasterer {
         int[] lrId = getLowerRightValue(lrlon, lrlat, d);
         String[][] test = new String[lrId[0] - ulId[0] + 1][lrId[1] - ulId[1] + 1];
         for (int i = ulId[1]; i <= lrId[1]; i += 1) {
+            if (i == -1) {
+                success = false;
+            }
             for (int j = ulId[0]; j <= lrId[0]; j += 1) {
+                if (j == -1) {
+                    success = false;
+                }
                 test[i - ulId[1]][j - ulId[0]] = "d" + d + "_x" + j + "_y" + i + ".png";
             }
         }
 
+        double[] raul = raterUpperLeftCorner(ulId[0], ulId[1], d, false);
+        double[] ralr = raterUpperLeftCorner(lrId[0], lrId[1], d, true);
+        double ras_ul_lon = raul[0];
+        double ras_ul_lat = raul[1];
+        double ras_lr_lon = ralr[0];
+        double ras_lr_lat = ralr[1];
+
+
         results.put("render_grid", test);
-        results.put("raster_ul_lon", ullon);
-        results.put("raster_ul_lat", ullat);
-        results.put("raster_lr_lon", lrlon);
-        results.put("raster_lr_lat", lrlat);
+        results.put("raster_ul_lon", ras_ul_lon);
+        results.put("raster_ul_lat", ras_ul_lat);
+        results.put("raster_lr_lon", ras_lr_lon);
+        results.put("raster_lr_lat", ras_lr_lat);
         results.put("depth", d);
-        results.put("query_success", true);
+        results.put("query_success", success);
 
         return results;
     }
@@ -82,11 +97,31 @@ public class Rasterer {
     private int[] getUpperLeftValue(double lon, double lat, int dep) {
         int x = getULXValue(lon, dep);
         int y = getULYValue(lat, dep);
-        if (x == -1 || y == -1) {
-            throw new RuntimeException("getUpperLeftFigure() has a bug, " +
-                    "x = " + x + " y = " + y);
-        }
         return new int[]{x, y};
+    }
+
+    /**
+     * @param lon longitude of the lower right corner of the whole picture
+     * @param lat latitude of the lower right corner of the whole picture
+     * @return int[x, y] of the lower right corner
+     */
+    private int[] getLowerRightValue(double lon, double lat, int dep) {
+        int x = getULXValue(lon, dep);
+        int y = getULYValue(lat, dep);
+        return new int[]{x, y};
+    }
+
+    private double[] raterUpperLeftCorner(int x, int y, int d, boolean lr) {
+        double gapLon = (MapServer.ROOT_LRLON - MapServer.ROOT_ULLON) * x / Math.pow(2, d);
+        double gapLat = (MapServer.ROOT_LRLAT - MapServer.ROOT_ULLAT) * y/ Math.pow(2, d);
+        double resLon = MapServer.ROOT_ULLON + gapLon;
+        double resLat = MapServer.ROOT_ULLAT + gapLat;
+
+        if (lr) {
+            resLon += gapLon / x;
+            resLat += gapLat / y;
+        }
+        return new double[]{resLon, resLat};
     }
 
     private int getULXValue(double lon, int dep) {
@@ -100,7 +135,6 @@ public class Rasterer {
                 return i - 1;
             }
         }
-
         return -1;
     }
 
@@ -116,21 +150,6 @@ public class Rasterer {
             }
         }
         return -1;
-    }
-
-    /**
-     * @param lon longitude of the lower right corner of the whole picture
-     * @param lat latitude of the lower right corner of the whole picture
-     * @return int[x, y] of the lower right corner
-     */
-    private int[] getLowerRightValue(double lon, double lat, int dep) {
-        int x = getULXValue(lon, dep);
-        int y = getULYValue(lat, dep);
-        if (x == -1 || y == -1) {
-            throw new RuntimeException("getLowerRightValue() has a bug, " +
-                    "x = " + x + " y = " + y);
-        }
-        return new int[]{x, y};
     }
 
     private int depthLevel(Map<String, Double> params) {
