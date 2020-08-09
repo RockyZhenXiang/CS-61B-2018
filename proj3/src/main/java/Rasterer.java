@@ -54,11 +54,14 @@ public class Rasterer {
 
         int d = depthLevel(params);
 
-        int[] upperLeftIndex = getUpperLeftValue(ullon, ullat, d);
-        String ul = "d" + d + "_x" + upperLeftIndex[0] + "_y" + upperLeftIndex[1] + ".png";
-        int[] lowerRightIndex = getLowerRightValue(lrlon, lrlat, d);
-        String lr = "d" + d + "_x" + lowerRightIndex[0] + "_y" + lowerRightIndex[1] + ".png";
-        String[][] test = new String[][]{{ul}, {lr}};
+        int[] ulId = getUpperLeftValue(ullon, ullat, d);
+        int[] lrId = getLowerRightValue(lrlon, lrlat, d);
+        String[][] test = new String[lrId[0] - ulId[0] + 1][lrId[1] - ulId[1] + 1];
+        for (int i = ulId[1]; i <= lrId[1]; i += 1) {
+            for (int j = ulId[0]; j <= lrId[0]; j += 1) {
+                test[i - ulId[1]][j - ulId[0]] = "d" + d + "_x" + j + "_y" + i + ".png";
+            }
+        }
 
         results.put("render_grid", test);
         results.put("raster_ul_lon", ullon);
