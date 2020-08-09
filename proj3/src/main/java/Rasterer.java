@@ -49,16 +49,16 @@ public class Rasterer {
         // reads input
         double lrlon  = params.get("lrlon");
         double ullon  = params.get("ullon");
-        double w  = params.get("w");
-        double h  = params.get("h");
         double ullat  = params.get("ullat");
         double lrlat  = params.get("lrlat");
 
         int d = depthLevel(params);
 
-        int[] upperLeftIndex = getUpperLeftFigure(ullon, ullat, d);
+        int[] upperLeftIndex = getUpperLeftValue(ullon, ullat, d);
         String ul = "d" + d + "_x" + upperLeftIndex[0] + "_y" + upperLeftIndex[1] + ".png";
-        String[][] test = new String[][]{{ul}};
+        int[] lowerRightIndex = getLowerRightValue(lrlon, lrlat, d);
+        String lr = "d" + d + "_x" + lowerRightIndex[0] + "_y" + lowerRightIndex[1] + ".png";
+        String[][] test = new String[][]{{ul}, {lr}};
 
         results.put("render_grid", test);
         results.put("raster_ul_lon", ullon);
@@ -76,9 +76,9 @@ public class Rasterer {
      * @param lat latitude of the upper left corner of the whole picture
      * @return int[x, y] of the upper left corner
      */
-    private int[] getUpperLeftFigure(double lon, double lat, int dep) {
-        int x = getXValue(lon, dep);
-        int y = getYValue(lat, dep);
+    private int[] getUpperLeftValue(double lon, double lat, int dep) {
+        int x = getULXValue(lon, dep);
+        int y = getULYValue(lat, dep);
         if (x == -1 || y == -1) {
             throw new RuntimeException("getUpperLeftFigure() has a bug, " +
                     "x = " + x + " y = " + y);
@@ -86,7 +86,7 @@ public class Rasterer {
         return new int[]{x, y};
     }
 
-    private int getXValue(double lon, int dep) {
+    private int getULXValue(double lon, int dep) {
         double[] boundaries = new double[(int) Math.pow(2, dep) + 1];
         boundaries[0] = MapServer.ROOT_ULLON;
         for (int i = 1; i < boundaries.length; i += 1) {
@@ -101,7 +101,7 @@ public class Rasterer {
         return -1;
     }
 
-    private int getYValue(double lat, int dep) {
+    private int getULYValue(double lat, int dep) {
         double[] boundaries = new double[(int) Math.pow(2, dep) + 1];
         boundaries[0] = MapServer.ROOT_ULLAT;
         for (int i = 1; i < boundaries.length; i += 1) {
@@ -113,6 +113,21 @@ public class Rasterer {
             }
         }
         return -1;
+    }
+
+    /**
+     * @param lon longitude of the lower right corner of the whole picture
+     * @param lat latitude of the lower right corner of the whole picture
+     * @return int[x, y] of the lower right corner
+     */
+    private int[] getLowerRightValue(double lon, double lat, int dep) {
+        int x = getULXValue(lon, dep);
+        int y = getULYValue(lat, dep);
+        if (x == -1 || y == -1) {
+            throw new RuntimeException("getLowerRightValue() has a bug, " +
+                    "x = " + x + " y = " + y);
+        }
+        return new int[]{x, y};
     }
 
     private int depthLevel(Map<String, Double> params) {
