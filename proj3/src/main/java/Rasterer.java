@@ -8,7 +8,6 @@ import java.util.Map;
  * not draw the output correctly.
  */
 public class Rasterer {
-
     public Rasterer() {
         // YOUR CODE HERE
 
@@ -53,41 +52,47 @@ public class Rasterer {
         double ullat  = params.get("ullat");
         double lrlat  = params.get("lrlat");
 
-        int d = depthLevel(params);
+        // test validate
+        if (ullon >= lrlon || lrlat >= ullat ||
+            ullon >= MapServer.ROOT_LRLON    ||
+            ullat <= MapServer.ROOT_LRLAT    ||
+            lrlon <= MapServer.ROOT_ULLON    ||
+            lrlat >= MapServer.ROOT_ULLAT) {
+            results.put("render_grid", null);
+            results.put("raster_ul_lon", 0.0);
+            results.put("raster_ul_lat", 0.0);
+            results.put("raster_lr_lon", 0.0);
+            results.put("raster_lr_lat", 0.0);
+            results.put("depth", 0);
+            results.put("query_success", false);
+        } else {
+            // calculation
+            int d = depthLevel(params);
 
-        int[] ulId = getUpperLeftValue(ullon, ullat, d);
-        int[] lrId = getLowerRightValue(lrlon, lrlat, d);
-        String[][] test = new String[lrId[1] - ulId[1] + 1][lrId[0] - ulId[0] + 1];
-        System.out.println(test.length);
-        System.out.println(test[0].length);
-        for (int i = ulId[0]; i <= lrId[0]; i += 1) {
-            if (i == -1) {
-                success = false;
-            }
-            for (int j = ulId[1]; j <= lrId[1]; j += 1) {
-                if (j == -1) {
-                    success = false;
+            int[] ulId = getUpperLeftValue(ullon, ullat, d);
+            int[] lrId = getLowerRightValue(lrlon, lrlat, d);
+            String[][] test = new String[lrId[1] - ulId[1] + 1][lrId[0] - ulId[0] + 1];
+            for (int i = ulId[0]; i <= lrId[0]; i += 1) {
+                for (int j = ulId[1]; j <= lrId[1]; j += 1) {
+                    test[j - ulId[1]][i - ulId[0]] = "d" + d + "_x" + i + "_y" + j + ".png";
                 }
-                test[j - ulId[1]][i - ulId[0]] = "d" + d + "_x" + i + "_y" + j + ".png";
             }
+
+            double[] raul = raterUpperLeftCorner(ulId[0], ulId[1], d, false);
+            double[] ralr = raterUpperLeftCorner(lrId[0], lrId[1], d, true);
+            double ras_ul_lon = raul[0];
+            double ras_ul_lat = raul[1];
+            double ras_lr_lon = ralr[0];
+            double ras_lr_lat = ralr[1];
+
+            results.put("render_grid", test);
+            results.put("raster_ul_lon", ras_ul_lon);
+            results.put("raster_ul_lat", ras_ul_lat);
+            results.put("raster_lr_lon", ras_lr_lon);
+            results.put("raster_lr_lat", ras_lr_lat);
+            results.put("depth", d);
+            results.put("query_success", true);
         }
-
-        double[] raul = raterUpperLeftCorner(ulId[0], ulId[1], d, false);
-        double[] ralr = raterUpperLeftCorner(lrId[0], lrId[1], d, true);
-        double ras_ul_lon = raul[0];
-        double ras_ul_lat = raul[1];
-        double ras_lr_lon = ralr[0];
-        double ras_lr_lat = ralr[1];
-
-
-        results.put("render_grid", test);
-        results.put("raster_ul_lon", ras_ul_lon);
-        results.put("raster_ul_lat", ras_ul_lat);
-        results.put("raster_lr_lon", ras_lr_lon);
-        results.put("raster_lr_lat", ras_lr_lat);
-        results.put("depth", d);
-        results.put("query_success", success);
-
         return results;
     }
 
@@ -97,8 +102,18 @@ public class Rasterer {
      * @return int[x, y] of the upper left corner
      */
     private int[] getUpperLeftValue(double lon, double lat, int dep) {
-        int x = getULXValue(lon, dep);
-        int y = getULYValue(lat, dep);
+        int x; int y;
+        if (lon <= MapServer.ROOT_ULLON) {
+            x = 0;
+        } else {
+            x = getULXValue(lon, dep);
+        }
+
+        if (lat >= MapServer.ROOT_ULLAT) {
+            y = 0;
+        } else {
+            y = getULYValue(lat, dep);
+        }
         return new int[]{x, y};
     }
 
@@ -108,8 +123,18 @@ public class Rasterer {
      * @return int[x, y] of the lower right corner
      */
     private int[] getLowerRightValue(double lon, double lat, int dep) {
-        int x = getULXValue(lon, dep);
-        int y = getULYValue(lat, dep);
+        int x; int y;
+        if (lon >= MapServer.ROOT_LRLON) {
+            x = dep;
+        } else {
+            x = getULXValue(lon, dep);
+        }
+
+        if (lat <= MapServer.ROOT_LRLAT) {
+            y = dep;
+        } else {
+            y = getULYValue(lat, dep);
+        }
         return new int[]{x, y};
     }
 

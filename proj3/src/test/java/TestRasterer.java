@@ -32,6 +32,54 @@ public class TestRasterer {
     }
 
     @Test
+    public void test1234() {
+        Map<String, Double> parms = new HashMap<>();
+        parms.put("lrlon", -122.20908713544797);
+        parms.put("ullon", -122.3027284165759);
+        parms.put("w", 305.0);
+        parms.put("h", 300.0);
+        parms.put("ullat", 37.88708748276975);
+        parms.put("lrlat", 37.848731523430196);
+
+        Map<String, Object> ans = new HashMap<>();
+        ans.put("raster_ul_lon", -122.2998046875);
+        ans.put("depth", 1);
+        ans.put("raster_lr_lon", -122.2119140625);
+        ans.put("raster_lr_lat", 37.82280243352756);
+        ans.put("render_grid", new String[][]{{"d1_x0_y0.png", "d1_x1_y0.png"},{"d1_x0_y1.png", "d1_x1_y1.png"}});
+        ans.put("raster_ul_lat", 37.892195547244356);
+        ans.put("query_success", true);
+        Map<String, Object> actual = rasterer.getMapRaster(parms);
+        String msg = "Your results did not match the expected results for input "
+                + mapToString(parms) + ".\n";
+        checkParamsMap(msg, ans, actual);
+    }
+
+    @Test
+    public void test12() {
+        Map<String, Double> parms = new HashMap<>();
+        parms.put("lrlon", -122.2104604264636);
+        parms.put("ullon", -122.30410170759153);
+        parms.put("w", 1091.0);
+        parms.put("h", 566.0);
+        parms.put("ullat", 37.870213571328854);
+        parms.put("lrlat", 37.8318576119893);
+
+        Map<String, Object> ans = new HashMap<>();
+        ans.put("raster_ul_lon", -122.2998046875);
+        ans.put("depth", 1);
+        ans.put("raster_lr_lon", -122.2119140625);
+        ans.put("raster_lr_lat", 37.82280243352756);
+        ans.put("render_grid", new String[][]{{"d1_x0_y0.png", "d1_x1_y0.png"},{"d1_x0_y1.png", "d1_x1_y1.png"}});
+        ans.put("raster_ul_lat", 37.892195547244356);
+        ans.put("query_success", true);
+        Map<String, Object> actual = rasterer.getMapRaster(parms);
+        String msg = "Your results did not match the expected results for input "
+                + mapToString(parms) + ".\n";
+        checkParamsMap(msg, ans, actual);
+    }
+
+    @Test
     public void testGetMapRaster() throws Exception {
         List<Map<String, Double>> testParams = paramsFromFile();
         List<Map<String, Object>> expectedResults = resultsFromFile();
