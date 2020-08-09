@@ -125,13 +125,13 @@ public class Rasterer {
     private int[] getLowerRightValue(double lon, double lat, int dep) {
         int x; int y;
         if (lon >= MapServer.ROOT_LRLON) {
-            x = dep;
+            x = (int)Math.pow(2, dep) - 1;
         } else {
             x = getULXValue(lon, dep);
         }
 
         if (lat <= MapServer.ROOT_LRLAT) {
-            y = dep;
+            y = (int)Math.pow(2, dep) - 1;
         } else {
             y = getULYValue(lat, dep);
         }

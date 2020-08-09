@@ -67,11 +67,13 @@ public class TestRasterer {
 
         Map<String, Object> ans = new HashMap<>();
         ans.put("raster_ul_lon", -122.2998046875);
-        ans.put("depth", 1);
+        ans.put("depth", 2);
         ans.put("raster_lr_lon", -122.2119140625);
         ans.put("raster_lr_lat", 37.82280243352756);
-        ans.put("render_grid", new String[][]{{"d1_x0_y0.png", "d1_x1_y0.png"},{"d1_x0_y1.png", "d1_x1_y1.png"}});
-        ans.put("raster_ul_lat", 37.892195547244356);
+        ans.put("render_grid", new String[][]{{"d2_x0_y1.png", "d2_x1_y1.png", "d2_x2_y1.png", "d2_x3_y1.png"},
+                {"d2_x0_y2.png", "d2_x1_y2.png", "d2_x2_y2.png", "d2_x3_y2.png"},
+                {"d2_x0_y3.png", "d2_x1_y3.png", "d2_x2_y3.png", "d2_x3_y3.png"}});
+        ans.put("raster_ul_lat", 37.87484726881516);
         ans.put("query_success", true);
         Map<String, Object> actual = rasterer.getMapRaster(parms);
         String msg = "Your results did not match the expected results for input "
