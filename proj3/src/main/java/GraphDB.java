@@ -6,10 +6,7 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Graph for storing all of the intersection (vertex) and road (edge) information.
@@ -26,9 +23,9 @@ public class GraphDB {
      * A helper class to store each nodes
      */
     private class Node {
-        private long id;
-        private double lat;
-        private double lon;
+        private final long id;
+        private final double lat;
+        private final double lon;
 
         public Node(Map<String, Object> parms) {
             id = (long)parms.get("id");
@@ -54,6 +51,7 @@ public class GraphDB {
     }
 
     private Set<Node> nodes = new HashSet<>();
+    private Map<Long, Set<Long>> edges = new HashMap<>();
     /**
      * Example constructor shows how to create and start an XML parser.
      * You do not need to modify this constructor, but you're welcome to do so.
@@ -81,6 +79,10 @@ public class GraphDB {
     public void addNode(Map<String, Object> parms) {
         Node node = new Node(parms);
         nodes.add(node);
+    }
+
+    public Map<Long, Set<Long>> getEdge() {
+        return edges;
     }
 
     /**
@@ -120,7 +122,8 @@ public class GraphDB {
      * @return An iterable of the ids of the neighbors of v.
      */
     Iterable<Long> adjacent(long v) {
-        return null;
+
+        return edges.get(v);
     }
 
     /**
