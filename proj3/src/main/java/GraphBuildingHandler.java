@@ -157,6 +157,7 @@ public class GraphBuildingHandler extends DefaultHandler {
                 }
             }
             wayNodes.clear();
+            flag = false;
         }
     }
 

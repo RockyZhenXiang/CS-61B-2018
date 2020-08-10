@@ -107,10 +107,15 @@ public class GraphDB {
      */
     private void clean() {
         // TODO: Your code here
+        Set<Long> temp = new HashSet();
         for (long id: nodes.keySet()) {
             if (!edges.containsKey(id)) {
-                nodes.remove(id);
+                temp.add(id);
             }
+        }
+
+        for (long remove: temp) {
+            nodes.remove(remove);
         }
     }
 
