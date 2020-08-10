@@ -33,6 +33,12 @@ public class GraphDB {
             lon = (double)parms.get("lon");
         }
 
+        public Node(long id, double lat, double lon) {
+            this.id = id;
+            this.lat = lat;
+            this.lon = lon;
+        }
+
         public long getId() {
             return id;
         }
@@ -50,7 +56,7 @@ public class GraphDB {
 
     }
 
-    private Set<Node> nodes = new HashSet<>();
+    private Map<Long, Node> nodes = new HashMap<>();
     private Map<Long, Set<Long>> edges = new HashMap<>();
     /**
      * Example constructor shows how to create and start an XML parser.
@@ -78,7 +84,7 @@ public class GraphDB {
      */
     public void addNode(Map<String, Object> parms) {
         Node node = new Node(parms);
-        nodes.add(node);
+        nodes.put((long)parms.get("id"), node);
     }
 
     public Map<Long, Set<Long>> getEdge() {
@@ -100,8 +106,14 @@ public class GraphDB {
      *  we can reasonably assume this since typically roads are connected.
      */
     private void clean() {
-        // TODO: Your code here.
+        // TODO: Your code here
+        for (long id: nodes.keySet()) {
+            if (!edges.containsKey(id)) {
+                nodes.remove(id);
+            }
+        }
     }
+
 
     /**
      * Returns an iterable of all vertex IDs in the graph.
@@ -109,11 +121,7 @@ public class GraphDB {
      */
     Iterable<Long> vertices() {
         //YOUR CODE HERE, this currently returns only an empty list.
-        ArrayList<Long> res = new ArrayList<>();
-        for (Node node: nodes) {
-            res.add(node.id);
-        }
-        return res;
+        return new ArrayList<>(nodes.keySet());
     }
 
     /**
@@ -122,7 +130,6 @@ public class GraphDB {
      * @return An iterable of the ids of the neighbors of v.
      */
     Iterable<Long> adjacent(long v) {
-
         return edges.get(v);
     }
 
@@ -184,7 +191,18 @@ public class GraphDB {
      * @return The id of the node in the graph closest to the target.
      */
     long closest(double lon, double lat) {
-        return 0;
+        double currentDis = Double.POSITIVE_INFINITY;
+        long resId = 0;
+        for (long id: nodes.keySet()) {
+            double tarLon = nodes.get(id).lon;
+            double tarLat = nodes.get(id).lat;
+            double dis = distance(lon, lat, tarLon, tarLat);
+            if (dis < currentDis) {
+                resId = id;
+                currentDis = dis;
+            }
+        }
+        return resId;
     }
 
     /**
@@ -193,7 +211,8 @@ public class GraphDB {
      * @return The longitude of the vertex.
      */
     double lon(long v) {
-        return 0;
+        Node node = nodes.get(v);
+        return node.lon;
     }
 
     /**
@@ -202,6 +221,7 @@ public class GraphDB {
      * @return The latitude of the vertex.
      */
     double lat(long v) {
-        return 0;
+        Node node = nodes.get(v);
+        return node.lat;
     }
 }
