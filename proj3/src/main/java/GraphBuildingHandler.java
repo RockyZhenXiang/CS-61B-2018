@@ -139,8 +139,8 @@ public class GraphBuildingHandler extends DefaultHandler {
             /* Hint1: If you have stored the possible connections for this way, here's your
             chance to actually connect the nodes together if the way is valid. */
             //System.out.println("Finishing a way");
-            if (flag) {
-                for (int i = 0; i < wayNodes.size() ; i += 1) {
+            if (flag && wayNodes.size() > 1) {
+                for (int i = 0; i < wayNodes.size(); i += 1) {
                     Set<Long> candidate;
                     if (g.getEdge().containsKey(wayNodes.get(i))) {
                         candidate = g.getEdge().get(wayNodes.get(i));

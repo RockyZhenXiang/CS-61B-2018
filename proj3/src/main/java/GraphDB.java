@@ -52,12 +52,10 @@ public class GraphDB {
         }
     }
 
-    private class Edge {
-
-    }
 
     private Map<Long, Node> nodes = new HashMap<>();
     private Map<Long, Set<Long>> edges = new HashMap<>();
+
     /**
      * Example constructor shows how to create and start an XML parser.
      * You do not need to modify this constructor, but you're welcome to do so.
