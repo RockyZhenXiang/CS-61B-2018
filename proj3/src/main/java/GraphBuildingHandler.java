@@ -2,9 +2,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  *  Parses OSM XML files using an XML SAX parser. Used to construct the graph of roads for
@@ -68,12 +66,15 @@ public class GraphBuildingHandler extends DefaultHandler {
         if (qName.equals("node")) {
             /* We encountered a new <node...> tag. */
             activeState = "node";
-//            System.out.println("Node id: " + attributes.getValue("id"));
-//            System.out.println("Node lon: " + attributes.getValue("lon"));
-//            System.out.println("Node lat: " + attributes.getValue("lat"));
 
-            /* TODO Use the above information to save a "node" to somewhere. */
+            /* Use the above information to save a "node" to somewhere. */
             /* Hint: A graph-like structure would be nice. */
+            Map<String, Object> parms = new HashMap<>();
+            parms.put("id", Long.parseLong(attributes.getValue("id")));
+            parms.put("lon", Double.parseDouble(attributes.getValue("lon")));
+            parms.put("lat", Double.parseDouble(attributes.getValue("lat")));
+            g.addNode(parms);
+
 
         } else if (qName.equals("way")) {
             /* We encountered a new <way...> tag. */

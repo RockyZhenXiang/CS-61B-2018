@@ -32,6 +32,7 @@ public class TestGraphBuildingTiny {
         initialized = true;
     }
 
+
     /** All nodes in the tiny-clean file are valid, so the clean method
      *  should not remove any vertices for this graph, i.e. all 7 nodes
      *  should survive the cleaning process.
