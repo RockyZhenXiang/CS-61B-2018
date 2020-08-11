@@ -1,5 +1,4 @@
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,6 +11,48 @@ import java.util.regex.Pattern;
  * down to the priority you use to order your vertices.
  */
 public class Router {
+
+    private static class Node implements Comparable{
+        private long id;
+        private double cost;
+
+        public Node(long id, double cost) {
+            this.id = id;
+            this.cost = cost;
+        }
+
+        public long getId() {
+            return id;
+        }
+
+        public double getCost() {
+            return cost;
+        }
+
+        /**
+         * returns 1 if this.cost is bigger then o.cost
+         * returns -1 if this.cost is smaller then o.cost
+         * returns 0 if this.cost == o.cost
+         * if o is null, return 1
+         * if o is from a different class, throw a exception
+         */
+        @Override
+        public int compareTo(Object o) {
+            if (o.getClass() != this.getClass()) {
+                throw new RuntimeException("Cannot compare to different classes");
+            }
+
+            try{
+                return Double.compare(cost, ((Node) o).cost);
+
+            }catch (Exception e) {
+                System.out.println("Class of o is" + o.getClass() + ", Class of this is Node");
+                throw e;
+            }
+        }
+    }
+
+
     /**
      * Return a List of longs representing the shortest path from the node
      * closest to a start location and the node closest to the destination
@@ -25,7 +66,79 @@ public class Router {
      */
     public static List<Long> shortestPath(GraphDB g, double stlon, double stlat,
                                           double destlon, double destlat) {
-        return null; // FIXME
+        long start = g.closest(stlon, stlat);
+        long end = g.closest(destlon, destlat);
+
+        return dijkstra(g, start, end);
+    }
+
+    private static List<Long> dijkstra(GraphDB g, long startId, long endId) {
+
+        PriorityQueue<Node> fringe = new PriorityQueue<>();
+        Map<Long, Long> parent= new HashMap<>();
+        Set<Long> marked = new HashSet<>(); // stores used id
+
+        marked.add(startId);
+        for (long nei: g.adjacent(startId)) {
+            Node neiNode = new Node(nei, g.distance(nei, startId));
+            fringe.add(neiNode);
+            parent.put(nei, startId);
+        }
+        // end of adding all initial setups
+
+        // start of dijkstra
+        while (fringe.size() != 0) {
+            Node nextNode = fringe.poll();
+            marked.add(nextNode.id);
+            if (nextNode.id == endId) {
+                return getPath(startId, nextNode.id, parent);
+            } else {
+                for (long nei : g.adjacent(nextNode.id)) {
+                    // check if this nei is used before
+                    if (!marked.contains(nei)) {
+                        // check if the neighbor existed in the fringe
+                        Node any = isInFringe(nei, fringe);
+                        if (any != null) {
+                            double currentCost = nextNode.cost + g.distance(nextNode.id, nei);
+                            assert any != null;
+                            if (currentCost < any.cost) { // update the fringe if the cost can be reduced
+                                fringe.remove(any);
+                                fringe.add(new Node(nei, currentCost));
+                                parent.put(nei, nextNode.id);
+                            }
+                            break;
+                        }
+                        // If reached, this nei is not in the fringe
+                        double currentCost = nextNode.cost + g.distance(nextNode.id, nei);
+                        fringe.add(new Node(nei, currentCost));
+                        parent.put(nei, nextNode.id);
+                    }
+                }
+            }
+        }
+        System.out.println("Cannot find a path between the start and the end point");
+        return null;
+    }
+
+    private static Node isInFringe(long nei, PriorityQueue<Node> fringe) {
+        for (Node any: fringe) {
+            if (any.id == nei) {
+                return any;
+            }
+        }
+        return null;
+    }
+
+    private static List<Long> getPath(long start, long id, Map<Long, Long> parent) {
+        List<Long> res = new ArrayList<>();
+        long next = id;
+        while (next != start) {
+            res.add(0, next);
+            next = parent.get(next);
+        }
+
+        res.add(0,start);
+        return res;
     }
 
     /**
