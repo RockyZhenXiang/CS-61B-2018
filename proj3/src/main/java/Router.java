@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.function.LongConsumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -73,73 +74,73 @@ public class Router {
     }
 
     private static List<Long> dijkstra(GraphDB g, long startId, long endId) {
+        // initialing required data structures
+        PriorityQueue<Node> fringe = new PriorityQueue<>(); // used to choose right node
+        Map<Long, Double> bestDis = new HashMap<>(); // value is the distance from startId to key
+        Map<Long, Long> parent = new HashMap<>(); // value is the parent of the key
+        Set<Long> marked = new HashSet<>(); // when a node is checked, it is marked
 
-        PriorityQueue<Node> fringe = new PriorityQueue<>();
-        Map<Long, Long> parent= new HashMap<>();
-        Set<Long> marked = new HashSet<>(); // stores used id
-
+        // storing initial values
         marked.add(startId);
+        bestDis.put(startId, 0.0);
+        parent.put(startId, startId);
+
         for (long nei: g.adjacent(startId)) {
-            Node neiNode = new Node(nei, g.distance(nei, startId));
+            double dis = g.distance(startId, nei);
+            Node neiNode = new Node(nei, dis);
             fringe.add(neiNode);
+            bestDis.put(nei, dis);
             parent.put(nei, startId);
         }
-        // end of adding all initial setups
 
-        // start of dijkstra
+        // start route finding
         while (fringe.size() != 0) {
-            Node nextNode = fringe.poll();
-            marked.add(nextNode.id);
-            if (nextNode.id == endId) {
-                return getPath(startId, nextNode.id, parent);
+            Node currentNode = fringe.poll();
+            if (marked.contains(currentNode.id)) {
+                continue;
+            }
+            if (currentNode.id == endId) {
+                return getParent(endId, parent);
             } else {
-                for (long nei : g.adjacent(nextNode.id)) {
-                    // check if this nei is used before
-                    if (!marked.contains(nei)) {
-                        // check if the neighbor existed in the fringe
-                        Node any = isInFringe(nei, fringe);
-                        if (any != null) {
-                            double currentCost = nextNode.cost + g.distance(nextNode.id, nei);
-                            assert any != null;
-                            if (currentCost < any.cost) { // update the fringe if the cost can be reduced
-                                fringe.remove(any);
-                                fringe.add(new Node(nei, currentCost));
-                                parent.put(nei, nextNode.id);
-                            }
-                            break;
+                long currentId = currentNode.id;
+                marked.add(currentNode.id);
+                for (long nei: g.adjacent(currentId)) {
+                    double dis = g.distance(nei, currentId);
+                    //relax
+                    if (bestDis.containsKey(nei)) { // if nei is seen before
+                        if (bestDis.get(nei) > bestDis.get(currentId) + dis) {
+                            bestDis.put(nei, bestDis.get(currentId) + dis);
+                            parent.put(nei, currentId);
+                            fringe.add(new Node(nei, bestDis.get(currentId) + dis));
                         }
-                        // If reached, this nei is not in the fringe
-                        double currentCost = nextNode.cost + g.distance(nextNode.id, nei);
-                        fringe.add(new Node(nei, currentCost));
-                        parent.put(nei, nextNode.id);
+                    } else {
+                        bestDis.put(nei, bestDis.get(currentId) + dis);
+                        parent.put(nei, currentId);
+                        fringe.add(new Node(nei, bestDis.get(currentId) + dis));
                     }
                 }
             }
         }
-        System.out.println("Cannot find a path between the start and the end point");
+
+        System.out.println("Cannot find a path between startId and endId");
         return null;
     }
 
-    private static Node isInFringe(long nei, PriorityQueue<Node> fringe) {
-        for (Node any: fringe) {
-            if (any.id == nei) {
-                return any;
+    private static List<Long> getParent(long endId, Map<Long, Long> parent) {
+        List<Long> res = new ArrayList<>();
+        long id = endId;
+        while (true) {
+            res.add(0, id);
+            if (id == parent.get(id)) {
+                break;
+            } else {
+                id = parent.get(id);
             }
         }
-        return null;
-    }
 
-    private static List<Long> getPath(long start, long id, Map<Long, Long> parent) {
-        List<Long> res = new ArrayList<>();
-        long next = id;
-        while (next != start) {
-            res.add(0, next);
-            next = parent.get(next);
-        }
-
-        res.add(0,start);
         return res;
     }
+
 
     /**
      * Create the list of directions corresponding to a route on the graph.
