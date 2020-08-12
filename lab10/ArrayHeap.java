@@ -24,27 +24,27 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
     }
 
     /**
-     * Returns the index of the node to the left of the node at i.
+     * Returns the index of the left child of the node at i.
      */
     private static int leftIndex(int i) {
-        /* TODO: Your code here! */
-        return 0;
+        return 2 * i;
     }
 
     /**
-     * Returns the index of the node to the right of the node at i.
+     * Returns the index of the right child of the node at i.
      */
     private static int rightIndex(int i) {
-        /* TODO: Your code here! */
-        return 0;
+        return 2 * i + 1;
     }
 
     /**
      * Returns the index of the node that is the parent of the node at i.
      */
     private static int parentIndex(int i) {
-        /* TODO: Your code here! */
-        return 0;
+        if (i == 1) {
+            return 1;
+        }
+        return i / 2;
     }
 
     /**
@@ -106,9 +106,11 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
     private void swim(int index) {
         // Throws an exception if index is invalid. DON'T CHANGE THIS LINE.
         validateSinkSwimArg(index);
-
-        /** TODO: Your code here. */
-        return;
+        int parentId = parentIndex(index);
+        if (min(parentId, index) == index && index != 1) {
+            swap(parentId, index);
+            swim(parentId);
+        }
     }
 
     /**
@@ -118,8 +120,19 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         // Throws an exception if index is invalid. DON'T CHANGE THIS LINE.
         validateSinkSwimArg(index);
 
-        /** TODO: Your code here. */
-        return;
+        int leftId = leftIndex(index);
+        int rightId = rightIndex(index);
+        int smallerChild = min(leftId, rightId);
+
+        if (getNode(smallerChild) == null) {
+            return;
+        }
+
+        if (min(smallerChild, index) == smallerChild)  {
+            swap(smallerChild, index);
+            sink(smallerChild);
+        }
+
     }
 
     /**
@@ -133,7 +146,11 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
             resize(contents.length * 2);
         }
 
-        /* TODO: Your code here! */
+        Node newNode = new Node(item, priority);
+        contents[size + 1] = newNode;
+        size += 1;
+        swim(size);
+
     }
 
     /**
@@ -142,8 +159,8 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
      */
     @Override
     public T peek() {
-        /* TODO: Your code here! */
-        return null;
+        Node targetNode = contents[0];
+        return targetNode.myItem;
     }
 
     /**
@@ -157,8 +174,13 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
      */
     @Override
     public T removeMin() {
-        /* TODO: Your code here! */
-        return null;
+        swap(1, size);
+        size -= 1;
+        if (size == 0) {
+            return contents[1].myItem;
+        }
+        sink(1);
+        return contents[size + 1].myItem;
     }
 
     /**
@@ -180,8 +202,15 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
      */
     @Override
     public void changePriority(T item, double priority) {
-        /* TODO: Your code here! */
-        return;
+        for (int i = 1; i < size + 1; i += 1) {
+            Node candidate = contents[i];
+            if (candidate.myItem.equals(item)) {
+                candidate.myPriority = priority;
+                swim(i);
+                sink(i);
+                return;
+            }
+        }
     }
 
     /**
@@ -405,13 +434,32 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         pq.insert("b", 2);
         pq.insert("c", 3);
         pq.insert("d", 4);
-
         int i = 0;
         String[] expected = {"a", "b", "c", "c", "d", "d", "e", "g", "h", "i"};
         while (pq.size() > 1) {
             assertEquals(expected[i], pq.removeMin());
             i += 1;
         }
+    }
+
+    @Test
+    public void testB003() {
+        ExtrinsicPQ<String> pq = new ArrayHeap<>();
+        pq.insert("l", 10);
+        assertEquals("l", pq.removeMin());
+    }
+
+    @Test
+    public void testBoo2() {
+        ExtrinsicPQ<String> pq = new ArrayHeap<>();
+        pq.insert("a", 1);
+        pq.insert("b", 2);
+        pq.insert("c", 3);
+        pq.insert("d", 4);
+        pq.insert("e", 5);
+        pq.insert("f", 6);
+
+        System.out.println(pq.toString());
     }
 
 }

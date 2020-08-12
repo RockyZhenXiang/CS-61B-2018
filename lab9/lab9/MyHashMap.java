@@ -7,7 +7,7 @@ import java.util.Set;
  *  A hash table-backed Map implementation. Provides amortized constant time
  *  access to elements via get(), remove(), and put() in the best case.
  *
- *  @author Your name here
+ *  @author Rocky Zhenxiang Fang
  */
 public class MyHashMap<K, V> implements Map61B<K, V> {
 
@@ -17,7 +17,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     private ArrayMap<K, V>[] buckets;
     private int size;
 
-    private int loadFactor() {
+    private double loadFactor() {
         return size / buckets.length;
     }
 
@@ -48,24 +48,64 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         return Math.floorMod(key.hashCode(), numBuckets);
     }
 
-    /* Returns the value to which the specified key is mapped, or null if this
+    /** Returns the value to which the specified key is mapped, or null if this
      * map contains no mapping for the key.
      */
     @Override
     public V get(K key) {
-        throw new UnsupportedOperationException();
+        int hashCode = hash(key);
+        return buckets[hashCode].get(key);
     }
 
-    /* Associates the specified value with the specified key in this map. */
+    /** Associates the specified value with the specified key in this map. */
     @Override
     public void put(K key, V value) {
-        throw new UnsupportedOperationException();
+        if (get(key) == null) {
+            size += 1;
+        }
+        int hashCode = hash(key);
+        buckets[hashCode].put(key, value);
+
+        // resizing
+        if (loadFactor() > MAX_LF) {
+            buckets = resize();
+        }
     }
 
-    /* Returns the number of key-value mappings in this map. */
+
+    /**
+     * Creates a new bucket having double of original length
+     * @return
+     */
+    private ArrayMap<K, V>[] resize() {
+        ArrayMap<K, V>[] newBuckets = new ArrayMap[buckets.length * 2];
+
+        for (int i = 0; i < newBuckets.length; i += 1) {
+            newBuckets[i] = new ArrayMap<>();
+        }
+        for (ArrayMap<K, V> bucket: buckets) {
+            for (K oldKey: bucket) {
+                V oldValues = bucket.get(oldKey);
+                int hashCode = hashResize(oldKey);
+                newBuckets[hashCode].put(oldKey, oldValues);
+            }
+        }
+        return newBuckets;
+    }
+
+    private int hashResize(K key) {
+        if (key == null) {
+            return 0;
+        }
+
+        int numBuckets = buckets.length * 2;
+        return Math.floorMod(key.hashCode(), numBuckets);
+    }
+
+    /** Returns the number of key-value mappings in this map. */
     @Override
     public int size() {
-        throw new UnsupportedOperationException();
+        return size;
     }
 
     //////////////// EVERYTHING BELOW THIS LINE IS OPTIONAL ////////////////

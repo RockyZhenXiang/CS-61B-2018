@@ -2,24 +2,22 @@ import javax.annotation.processing.SupportedSourceVersion;
 import java.lang.reflect.AnnotatedArrayType;
 
 public class LinkedListDeque<T> {
+    /**
+     * LinkedListDeque using two ended sentineNode
+     */
 
-    public class LinkedNode {
-        public LinkedNode prev;
-        public T item;
-        public LinkedNode next;
+    private class LinkedNode {
+        private LinkedNode prev;
+        private T item;
+        private LinkedNode next;
 
-        public LinkedNode (T i, LinkedNode n){
-            item = i;
-            next = n;
-        }
-
-        public LinkedNode (LinkedNode p, T i, LinkedNode n){
+        private LinkedNode (LinkedNode p, T i, LinkedNode n){
             prev = p;
             item = i;
             next = n;
         }
 
-        public T getRec(int index){
+        private T getRec(int index){
             if (index == 0){
                 return item;
             }
@@ -29,124 +27,134 @@ public class LinkedListDeque<T> {
     }
 
 
-    private LinkedNode sentinelNode;
+    private LinkedNode sentinelFront;
     private int size;
-    private LinkedNode lastNode;
+    private LinkedNode sentinelBack;
 
-    // Constructors
-    public LinkedListDeque(T x){
-        sentinelNode = new LinkedNode(null, null);
-        sentinelNode.next = new LinkedNode(sentinelNode, x, null);
-        lastNode = sentinelNode.next;
-        lastNode.next = sentinelNode;
-        size = 1;
-    }
+    // Constructor
+    /**
+     * Creates a empty LinkedListDeque
+     */
 
     public LinkedListDeque(){
         size = 0;
-        sentinelNode = new LinkedNode(null, null);
-        lastNode = sentinelNode;
-
+        sentinelFront = new LinkedNode(null, null, null);
+        sentinelBack = new LinkedNode(sentinelFront, null, null);
+        sentinelFront.next = sentinelBack;
     }
 
     // Methods
+
+    /**
+     * Add @param x one step behind sentinelFront
+     */
     public void addFirst(T x){
 
-        sentinelNode.next = new LinkedNode(sentinelNode, x, sentinelNode.next);
-
-        if (sentinelNode.next.next != null) {
-            sentinelNode.next.next.prev = sentinelNode.next;
-        }else{
-            lastNode = sentinelNode.next;
-        }
+        sentinelFront.next = new LinkedNode(sentinelFront, x, sentinelFront.next);
+        sentinelFront.next.next.prev = sentinelFront.next;
         size += 1;
     }
-
-    public T getFirst(){
-
-        return sentinelNode.next.item;
-    }
-
+    /**
+     * Add @param x one step in front of sentinelBack
+     */
     public void addLast(T x){
 
         lastNode.next = new LinkedNode(lastNode, x, sentinelNode);
         lastNode = lastNode.next;
+
+        sentinelBack.prev = new LinkedNode(sentinelBack.prev, x, sentinelBack);
+        sentinelBack.prev.prev.next = sentinelBack.prev;
+        
         size += 1;
     }
 
-    public T getLast(){
+    /**
+     * Prints the items in the deque from first to last,
+     * separated by a space. Once all the items have been
+     * printed, print out a new line.
+     */
 
-        return lastNode.item;
+    public void printDeque(){
+        LinkedNode ptr = sentinelFront.next;
+
+        while(ptr != sentinelBack) {
+            System.out.print(ptr.item + " ");
+            ptr = ptr.next;
+        }
+        System.out.println();
     }
 
+    /**
+     * return true if the LinkListDeque is empty
+     */
     public boolean isEmpty() {
         return size == 0;
     }
 
+    /**
+     * returns the number of items in the LinkedListDeque
+     */
     public int size(){
         return size;
     }
 
-    public void printDeque(){
-        if (size == 0){
-            return;
-        }
-        LinkedNode ptr = sentinelNode.next;
-        while(ptr != lastNode.next) {
-            System.out.print(ptr.item + " ");
-            ptr = ptr.next;
-        }
-        System.out.println(""); 
-    }
+
+    /**
+     * returns the first item in the LinkedListDeque then remove it from the deque
+     */
 
     public T removeFirst() {
-        if (size == 0) { return null; }
-        T res = sentinelNode.next.item;
-
-        if (lastNode == sentinelNode.next){
-            lastNode = sentinelNode;
-            sentinelNode.next = null;
-        }else {
-            sentinelNode.next = sentinelNode.next.next;
-            sentinelNode.next.prev = sentinelNode;
+        if (size == 0) {
+            return null;
         }
 
+        T res = sentinelFront.next.item;
+        sentinelFront.next = sentinelFront.next.next;
+        sentinelFront.next.prev = sentinelFront;
         size -= 1;
 
         return res;
     }
 
+    /**
+     * returns the last item in the LinkedListDeque then remove it from the deque
+     */
     public T removeLast() {
-        if (size == 0) { return null; }
-        T res = lastNode.item;
+        if (size == 0) {
+            return null;
+        }
+        T res = sentinelBack.prev.item;
 
-        lastNode = lastNode.prev;
-        lastNode.next = sentinelNode;
+        sentinelBack.prev = sentinelBack.prev.prev;
+        sentinelBack.prev.next = sentinelBack;
         size -= 1;
         return res;
     }
 
     public T get(int index) {
-        if (index >= size || index < 0) { return null; }
-
-        LinkedNode ptr = sentinelNode.next;
+        if (index >= size || index < 0) {
+            return null;
+        }
+        LinkedNode ptr = sentinelFront.next;
 
         while(index != 0) {
             ptr = ptr.next;
             index -= 1;
         }
-
         return ptr.item;
     }
 
     public T getRecursive(int index){
-        if (index >= size || index < 0){return null;}
-        return sentinelNode.next.getRec(index);
+
+        if (index >= size || index < 0) {
+            return null;
+        }
+        return sentinelFront.next.getRec(index);
     }
 
 
-    public static void main(String[] args) {
-        LinkedListDeque S = new LinkedListDeque("Master");
+    private static void main(String[] args) {
+        LinkedListDeque S = new LinkedListDeque();
         S.addFirst("Rocky");
         S.addFirst("Ricky");
         S.addFirst("Hailie");

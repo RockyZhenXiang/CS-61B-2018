@@ -2,6 +2,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 
@@ -58,6 +60,7 @@ public class TestGraphBuilding {
     public void testNodeCountSmall() {
         Iterable<Long> ids = graphSmall.vertices();
         int numberOfNodes = countIterableItems(ids);
+
         assertEquals("Your graph should have 21 nodes after cleaning. Consider removing the call"
                 + " to clean and seeing if you get 250 nodes as expected as a sanity check on"
                 + "  your results before calling clean.", 21, numberOfNodes);

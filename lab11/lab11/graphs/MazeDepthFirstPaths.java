@@ -9,8 +9,8 @@ public class MazeDepthFirstPaths extends MazeExplorer {
     public int[] edgeTo;
     public boolean[] marked;
     */
-    private int s;
-    private int t;
+    private int s; // source id
+    private int t; // target id
     private boolean targetFound = false;
     private Maze maze;
 

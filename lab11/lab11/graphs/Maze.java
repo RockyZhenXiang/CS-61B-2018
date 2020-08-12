@@ -85,6 +85,7 @@ public class Maze implements Observer {
      * Returns one dimensional coordinate for vertex in position x, y.
      */
     public int xyTo1D(int x, int y) {
+
         return (y - 1) * N + (x - 1);
     }
 
