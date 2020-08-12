@@ -21,8 +21,11 @@ public class TestDirectionsTiny {
     public void testRouteDirections() throws Exception {
         List<Long> shortestPath = Router.shortestPath(graph, 0.4, 38.1, 0.4, 38.6); //41-46
         List<Router.NavigationDirection> actual = Router.routeDirections(graph, shortestPath);
-        System.out.println(graph.distance(41,63));
-        System.out.println(graph.distance(66,63));
-        System.out.println(graph.distance(66,46));
+//        System.out.println(graph.distance(41,63));
+//        System.out.println(graph.distance(66,63));
+//        System.out.println(graph.distance(66,46));
+//        System.out.println(graph.bearing(41,63));
+//        System.out.println(graph.bearing(66,63));
+//        System.out.println(graph.bearing(66,46));
     }
 }

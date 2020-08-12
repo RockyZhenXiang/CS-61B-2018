@@ -155,9 +155,11 @@ public class Router {
     public static List<NavigationDirection> routeDirections(GraphDB g, List<Long> route) {
         List<NavigationDirection> res = new ArrayList<>();
         String wayName = g.getEdge().get(route.get(0)).get(route.get(1));
-        double distance = g.distance(route.get(0), route.get(1));
+        double distance = 0;
+        int direction = 0;
+
         // I am now at the second node of route
-        for (int i = 2; i < route.size(); i += 1) {
+        for (int i = 1; i < route.size(); i += 1) {
             long current = route.get(i);
             long prev = route.get(i - 1);
             String passedRoadName = g.getEdge().get(current).get(prev);
@@ -166,7 +168,7 @@ public class Router {
                 if (res.size() == 0) {
                     nd.direction = 0;
                 } else {
-                    nd.direction = angle2Direction(g, prev, current);
+                    nd.direction = direction;
                 }
                 nd.way = wayName;
                 nd.distance = distance;
@@ -176,61 +178,56 @@ public class Router {
                 // change variables
                 distance = g.distance(prev, current);
                 wayName = passedRoadName;
-
-                if (i == route.size() - 1) { // if I am at the last node, add the last path
-                    NavigationDirection lastNd = new NavigationDirection();
-                    if (res.size() == 0) {
-                        lastNd.direction = 0;
-                    } else {
-                        lastNd.direction = angle2Direction(g, prev, current);
-                    }
-                    lastNd.way = wayName;
-                    lastNd.distance = distance;
-                    res.add(lastNd);
-                }
-
-
+                direction =  relativeBearing(g, route, i);
             } else {
                 distance += g.distance(prev, current);
-
-                if (i == route.size() - 1) { // if I am at the last node, add the last path
-                    NavigationDirection nd = new NavigationDirection();
-                    if (res.size() == 0) {
-                        nd.direction = 0;
-                    } else {
-                        nd.direction = angle2Direction(g, prev, current);
-                    }
-                    nd.way = wayName;
-                    nd.distance = distance;
-                    res.add(nd);
-                }
             }
 
-
-
+            if (i == route.size() - 1) { // if I am at the last node, add the last path
+                NavigationDirection nd = new NavigationDirection();
+                if (res.size() == 0) {
+                    nd.direction = 0;
+                } else {
+                    nd.direction = direction;
+                }
+                nd.way = wayName;
+                nd.distance = distance;
+                res.add(nd);
+            }
         }
-
-
 
         return res;
     }
 
-    private static int angle2Direction(GraphDB g, long head, long tail) {
-        double angle = g.bearing(head, tail);
-
+    private static int relativeBearing(GraphDB g, List<Long> route, int i) {
+        long prevprev = route.get(i - 2);
+        long prev = route.get(i - 1);
+        long current = route.get(i);
+        double lastBearing = g.bearing(prevprev, prev);
+        double thisBearing = g.bearing(prev, current);
+        double reB = thisBearing - lastBearing;
+        while (reB < -180) {
+            reB += 360;
+        }
+        while (reB > 180) {
+            reB -= 360;
+        }
+        return angle2Direction(reB);
+    }
+    private static int angle2Direction(double angle) {
         if (-15 <= angle && angle <= 15) {
             return 1; // straight
-        } else if (-30 <= angle && angle <= -15) {
+        } else if (-30 <= angle && angle < -15) {
             return 2; // slight left
-        } else if (15 <= angle && angle <= 30) {
+        } else if (15 < angle && angle <= 30) {
             return 3; // slight right
-        } else if (-100 <= angle && angle <= -30) {
+        } else if (-100 <= angle && angle < -30) {
             return 5; // left
-        } else if (30 <= angle && angle <= 100) {
+        } else if (30 < angle && angle <= 100) {
             return 4; // right
-        } else if (angle <= -100) {
+        } else if (angle < -100) {
             return 6; // sharp left
-        } else if (100 <= angle) {
+        } else if (100 < angle) {
             return 7; // sharp right
         }
 
