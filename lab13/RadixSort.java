@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /**
  * Class for doing Radix sort
  *
@@ -17,7 +19,17 @@ public class RadixSort {
      */
     public static String[] sort(String[] asciis) {
         // TODO: Implement LSD Sort
-        return null;
+        // find max string index
+        int max = Integer.MIN_VALUE;
+        for (String str: asciis) {
+            max = Math.max(max, str.length());
+        }
+        String[] res = Arrays.copyOf(asciis, asciis.length);
+        for (int i = max - 1; i >= 0; i -= 1) {
+            res = sortHelperLSD(res, i);
+        }
+
+        return res;
     }
 
     /**
@@ -26,9 +38,55 @@ public class RadixSort {
      * @param asciis Input array of Strings
      * @param index The position to sort the Strings on.
      */
-    private static void sortHelperLSD(String[] asciis, int index) {
+    private static String[] sortHelperLSD(String[] asciis, int index) {
         // Optional LSD helper method for required LSD radix sort
-        return;
+
+        // find max
+        int max = Integer.MIN_VALUE;
+        for (String i: asciis) {
+            try{
+                int j = (int) i.charAt(index);
+                max = Math.max(j, max);
+            } catch (Exception ignored) {
+            }
+        }
+
+        // gather all the counts for each value
+        int[] counts = new int[max + 2]; // one additional bucket for -1
+        for (String str: asciis) {
+            if (str.length() <= index) {
+                counts[0] += 1;
+            } else {
+                int j = (int) str.charAt(index);
+                counts[j + 1] += 1;
+            }
+        }
+
+        // generalized implementation of counting sort that uses start position calculation
+        int[] starts = new int[max + 2];
+        int pos = 0;
+        for (int i = 0; i < starts.length; i += 1) {
+            starts[i] = pos;
+            pos += counts[i];
+        }
+
+        String[] sorted2 = new String[asciis.length];
+        for (int i = 0; i < asciis.length; i += 1) {
+            String str = asciis[i];
+            int item;
+            if (str.length() <= index) {
+                item = 0;
+            } else {
+                item = (int) str.charAt(index) + 1;
+            }
+            int place = starts[item];
+            sorted2[place] = str;
+            starts[item] += 1;
+        }
+
+        // return the sorted array
+        return sorted2;
+
     }
 
     /**
