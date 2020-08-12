@@ -154,32 +154,64 @@ public class Router {
      */
     public static List<NavigationDirection> routeDirections(GraphDB g, List<Long> route) {
         List<NavigationDirection> res = new ArrayList<>();
-        double distance = 0;
         String wayName = g.getEdge().get(route.get(0)).get(route.get(1));
-        for (int i = 1; i < route.size(); i += 1) {
+        double distance = g.distance(route.get(0), route.get(1));
+        // I am now at the second node of route
+        for (int i = 2; i < route.size(); i += 1) {
+            long current = route.get(i);
             long prev = route.get(i - 1);
-            long current = route.get(i );
-            String nextWayName = g.getEdge().get(prev).get(current);
-            if (!wayName.equals(nextWayName)) {
-                // walked on a different road, add a new ND and change the wayName
+            String passedRoadName = g.getEdge().get(current).get(prev);
+            if (!passedRoadName.equals(wayName)) {
                 NavigationDirection nd = new NavigationDirection();
-                if (res.size() == 0) { // the first object
+                if (res.size() == 0) {
                     nd.direction = 0;
                 } else {
                     nd.direction = angle2Direction(g, prev, current);
                 }
+                nd.way = wayName;
                 nd.distance = distance;
-                if (!wayName.equals("")) {
-                    nd.way = wayName;
-                }
                 res.add(nd);
+                // finished adding one nd in the list
 
-                distance = 0;
-                wayName = nextWayName;
+                // change variables
+                distance = g.distance(prev, current);
+                wayName = passedRoadName;
+
+                if (i == route.size() - 1) { // if I am at the last node, add the last path
+                    NavigationDirection lastNd = new NavigationDirection();
+                    if (res.size() == 0) {
+                        lastNd.direction = 0;
+                    } else {
+                        lastNd.direction = angle2Direction(g, prev, current);
+                    }
+                    lastNd.way = wayName;
+                    lastNd.distance = distance;
+                    res.add(lastNd);
+                }
+
+
             } else {
                 distance += g.distance(prev, current);
+
+                if (i == route.size() - 1) { // if I am at the last node, add the last path
+                    NavigationDirection nd = new NavigationDirection();
+                    if (res.size() == 0) {
+                        nd.direction = 0;
+                    } else {
+                        nd.direction = angle2Direction(g, prev, current);
+                    }
+                    nd.way = wayName;
+                    nd.distance = distance;
+                    res.add(nd);
+                }
             }
+
+
+
         }
+
+
+
         return res;
     }
 
