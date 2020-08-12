@@ -70,10 +70,10 @@ public class Router {
         long start = g.closest(stlon, stlat);
         long end = g.closest(destlon, destlat);
 
-        return dijkstra(g, start, end);
+        return astar(g, start, end);
     }
 
-    private static List<Long> dijkstra(GraphDB g, long startId, long endId) {
+    private static List<Long> astar(GraphDB g, long startId, long endId) {
         // initialing required data structures
         PriorityQueue<Node> fringe = new PriorityQueue<>(); // used to choose right node
         Map<Long, Double> bestDis = new HashMap<>(); // value is the distance from startId to key
@@ -87,7 +87,8 @@ public class Router {
 
         for (long nei: g.adjacent(startId)) {
             double dis = g.distance(startId, nei);
-            Node neiNode = new Node(nei, dis);
+            double h = g.distance(nei, endId); 
+            Node neiNode = new Node(nei, dis + h);
             fringe.add(neiNode);
             bestDis.put(nei, dis);
             parent.put(nei, startId);
@@ -111,12 +112,12 @@ public class Router {
                         if (bestDis.get(nei) > bestDis.get(currentId) + dis) {
                             bestDis.put(nei, bestDis.get(currentId) + dis);
                             parent.put(nei, currentId);
-                            fringe.add(new Node(nei, bestDis.get(currentId) + dis));
+                            fringe.add(new Node(nei, bestDis.get(currentId) + dis + g.distance(nei, endId)) );
                         }
                     } else {
                         bestDis.put(nei, bestDis.get(currentId) + dis);
                         parent.put(nei, currentId);
-                        fringe.add(new Node(nei, bestDis.get(currentId) + dis));
+                        fringe.add(new Node(nei, bestDis.get(currentId) + dis + g.distance(nei, endId)));
                     }
                 }
             }
