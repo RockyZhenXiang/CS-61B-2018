@@ -63,7 +63,7 @@ public class TestDirections {
     private List<List<Router.NavigationDirection>> resultsFromFile() throws Exception {
         List<String> lines = Files.readAllLines(Paths.get(RESULTS_FILE), Charset.defaultCharset());
         List<List<Router.NavigationDirection>> expected = new ArrayList<>();
-        int lineIdx = 2; // ignore comment lines
+        int lineIdx = 2;
         for (int i = 0; i < NUM_TESTS; i++) {
             int numDirections = Integer.parseInt(lines.get(lineIdx));
             lineIdx++;

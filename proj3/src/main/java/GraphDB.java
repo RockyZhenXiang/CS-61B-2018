@@ -6,7 +6,7 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Graph for storing all of the intersection (vertex) and road (edge) information.
@@ -18,8 +18,43 @@ import java.util.ArrayList;
  * @author Alan Yao, Josh Hug
  */
 public class GraphDB {
-    /** Your instance variables for storing the graph. You should consider
-     * creating helper classes, e.g. Node, Edge, etc. */
+
+    /**
+     * A helper class to store each nodes
+     */
+    private class Node {
+        private final long id;
+        private final double lat;
+        private final double lon;
+
+        public Node(Map<String, Object> parms) {
+            id = (long)parms.get("id");
+            lat = (double)parms.get("lat");
+            lon = (double)parms.get("lon");
+        }
+
+        public Node(long id, double lat, double lon) {
+            this.id = id;
+            this.lat = lat;
+            this.lon = lon;
+        }
+
+        public long getId() {
+            return id;
+        }
+
+        public double getLat() {
+            return lat;
+        }
+
+        public double getLon() {
+            return lon;
+        }
+    }
+
+
+    private Map<Long, Node> nodes = new HashMap<>();
+    private Map<Long, Map<Long, String>> edges = new HashMap<>();
 
     /**
      * Example constructor shows how to create and start an XML parser.
@@ -43,6 +78,18 @@ public class GraphDB {
     }
 
     /**
+     * add a node to nodes map
+     */
+    public void addNode(Map<String, Object> parms) {
+        Node node = new Node(parms);
+        nodes.put((long)parms.get("id"), node);
+    }
+
+    public Map<Long, Map<Long, String>> getEdge() {
+        return edges;
+    }
+
+    /**
      * Helper to process strings into their "cleaned" form, ignoring punctuation and capitalization.
      * @param s Input string.
      * @return Cleaned string.
@@ -57,8 +104,18 @@ public class GraphDB {
      *  we can reasonably assume this since typically roads are connected.
      */
     private void clean() {
-        // TODO: Your code here.
+        Set<Long> temp = new HashSet();
+        for (long id: nodes.keySet()) {
+            if (!edges.containsKey(id)) {
+                temp.add(id);
+            }
+        }
+
+        for (long remove: temp) {
+            nodes.remove(remove);
+        }
     }
+
 
     /**
      * Returns an iterable of all vertex IDs in the graph.
@@ -66,7 +123,7 @@ public class GraphDB {
      */
     Iterable<Long> vertices() {
         //YOUR CODE HERE, this currently returns only an empty list.
-        return new ArrayList<Long>();
+        return new ArrayList<>(nodes.keySet());
     }
 
     /**
@@ -75,7 +132,7 @@ public class GraphDB {
      * @return An iterable of the ids of the neighbors of v.
      */
     Iterable<Long> adjacent(long v) {
-        return null;
+        return edges.get(v).keySet();
     }
 
     /**
@@ -136,7 +193,18 @@ public class GraphDB {
      * @return The id of the node in the graph closest to the target.
      */
     long closest(double lon, double lat) {
-        return 0;
+        double currentDis = Double.POSITIVE_INFINITY;
+        long resId = 0;
+        for (long id: nodes.keySet()) {
+            double tarLon = nodes.get(id).lon;
+            double tarLat = nodes.get(id).lat;
+            double dis = distance(lon, lat, tarLon, tarLat);
+            if (dis < currentDis) {
+                resId = id;
+                currentDis = dis;
+            }
+        }
+        return resId;
     }
 
     /**
@@ -145,7 +213,8 @@ public class GraphDB {
      * @return The longitude of the vertex.
      */
     double lon(long v) {
-        return 0;
+        Node node = nodes.get(v);
+        return node.lon;
     }
 
     /**
@@ -154,6 +223,7 @@ public class GraphDB {
      * @return The latitude of the vertex.
      */
     double lat(long v) {
-        return 0;
+        Node node = nodes.get(v);
+        return node.lat;
     }
 }
