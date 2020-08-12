@@ -104,7 +104,6 @@ public class GraphDB {
      *  we can reasonably assume this since typically roads are connected.
      */
     private void clean() {
-        // TODO: Your code here
         Set<Long> temp = new HashSet();
         for (long id: nodes.keySet()) {
             if (!edges.containsKey(id)) {

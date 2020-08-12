@@ -1,3 +1,4 @@
+import javax.security.auth.login.CredentialException;
 import java.util.*;
 import java.util.function.LongConsumer;
 import java.util.regex.Matcher;
@@ -152,7 +153,56 @@ public class Router {
      * route.
      */
     public static List<NavigationDirection> routeDirections(GraphDB g, List<Long> route) {
-        return null; // FIXME
+        List<NavigationDirection> res = new ArrayList<>();
+        double distance = 0;
+        String wayName = g.getEdge().get(route.get(0)).get(route.get(1));
+        for (int i = 1; i < route.size(); i += 1) {
+            long prev = route.get(i - 1);
+            long current = route.get(i );
+            String nextWayName = g.getEdge().get(prev).get(current);
+            if (!wayName.equals(nextWayName)) {
+                // walked on a different road, add a new ND and change the wayName
+                NavigationDirection nd = new NavigationDirection();
+                if (res.size() == 0) { // the first object
+                    nd.direction = 0;
+                } else {
+                    nd.direction = angle2Direction(g, prev, current);
+                }
+                nd.distance = distance;
+                if (!wayName.equals("")) {
+                    nd.way = wayName;
+                }
+                res.add(nd);
+
+                distance = 0;
+                wayName = nextWayName;
+            } else {
+                distance += g.distance(prev, current);
+            }
+        }
+        return res;
+    }
+
+    private static int angle2Direction(GraphDB g, long head, long tail) {
+        double angle = g.bearing(head, tail);
+
+        if (-15 <= angle && angle <= 15) {
+            return 1; // straight
+        } else if (-30 <= angle && angle <= -15) {
+            return 2; // slight left
+        } else if (15 <= angle && angle <= 30) {
+            return 3; // slight right
+        } else if (-100 <= angle && angle <= -30) {
+            return 5; // left
+        } else if (30 <= angle && angle <= 100) {
+            return 4; // right
+        } else if (angle <= -100) {
+            return 6; // sharp left
+        } else if (100 <= angle) {
+            return 7; // sharp right
+        }
+
+        return -1;
     }
 
 
