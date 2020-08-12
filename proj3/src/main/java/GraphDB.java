@@ -54,7 +54,7 @@ public class GraphDB {
 
 
     private Map<Long, Node> nodes = new HashMap<>();
-    private Map<Long, Set<Long>> edges = new HashMap<>();
+    private Map<Long, Map<Long, String>> edges = new HashMap<>();
 
     /**
      * Example constructor shows how to create and start an XML parser.
@@ -85,7 +85,7 @@ public class GraphDB {
         nodes.put((long)parms.get("id"), node);
     }
 
-    public Map<Long, Set<Long>> getEdge() {
+    public Map<Long, Map<Long, String>> getEdge() {
         return edges;
     }
 
@@ -133,7 +133,7 @@ public class GraphDB {
      * @return An iterable of the ids of the neighbors of v.
      */
     Iterable<Long> adjacent(long v) {
-        return edges.get(v);
+        return edges.get(v).keySet();
     }
 
     /**

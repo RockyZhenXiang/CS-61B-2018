@@ -38,6 +38,7 @@ public class GraphBuildingHandler extends DefaultHandler {
     private final GraphDB g;
     private boolean flag = false;
     private List<Long> wayNodes = new ArrayList();
+    private String wayName;
 
     /**
      * Create a new GraphBuildingHandler.
@@ -100,14 +101,13 @@ public class GraphBuildingHandler extends DefaultHandler {
                 //System.out.println("Max Speed: " + v);
                 /* TODO set the max speed of the "current way" here. */
             } else if (k.equals("highway")) {
-                //System.out.println("Highway type: " + v);
-                /* TODO Figure out whether this way and its connections are valid. */
                 if (ALLOWED_HIGHWAY_TYPES.contains(v)) {
                     flag = true;
                 }
-                /* Hint: Setting a "flag" is good enough! */
             } else if (k.equals("name")) {
                 //System.out.println("Way Name: " + v);
+                wayName = v;
+
             }
 //            System.out.println("Tag with k=" + k + ", v=" + v + ".");
         } else if (activeState.equals("node") && qName.equals("tag") && attributes.getValue("k")
@@ -141,23 +141,26 @@ public class GraphBuildingHandler extends DefaultHandler {
             //System.out.println("Finishing a way");
             if (flag && wayNodes.size() > 1) {
                 for (int i = 0; i < wayNodes.size(); i += 1) {
-                    Set<Long> candidate;
+                    Map<Long, String> candidate;
                     if (g.getEdge().containsKey(wayNodes.get(i))) {
                         candidate = g.getEdge().get(wayNodes.get(i));
                     } else {
-                        candidate = new HashSet<>();
+                        candidate = new HashMap<>();
                         g.getEdge().put(wayNodes.get(i), candidate);
                     }
                     if (i != 0) {
-                        candidate.add(wayNodes.get(i - 1));
+                        candidate.put(wayNodes.get(i - 1), wayName);
                     }
                     if (i != wayNodes.size() - 1) {
-                        candidate.add(wayNodes.get(i + 1));
+                        candidate.put(wayNodes.get(i + 1), wayName);
                     }
                 }
             }
+
+            // reset all to default
             wayNodes.clear();
             flag = false;
+            wayName = "";
         }
     }
 
