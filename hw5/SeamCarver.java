@@ -173,10 +173,10 @@ public class SeamCarver {
 
 
     public void removeHorizontalSeam(int[] seam) {
-
-    }   // remove horizontal seam from picture
-    public    void removeVerticalSeam(int[] seam) {
-
+        picture = SeamRemover.removeHorizontalSeam(picture, findHorizontalSeam());
+    }
+    public void removeVerticalSeam(int[] seam) {
+        picture = SeamRemover.removeVerticalSeam(picture, findVerticalSeam());
     }    // remove vertical seam from picture
 
 }
