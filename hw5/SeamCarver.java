@@ -84,9 +84,9 @@ public class SeamCarver {
         int downBlue = picture.get(x, down).getBlue();
         int downGreen = picture.get(x, down).getGreen();
 
-        return Math.pow(upRed - downRed, 2)
-                + Math.pow(upBlue - downBlue, 2)
-                + Math.pow(upGreen - downGreen, 2);
+        return (upRed - downRed) * (upRed - downRed)
+                + (upBlue - downBlue) * (upBlue - downBlue)
+                + (upGreen - downGreen) * (upGreen - downGreen);
     }
 
     /**
