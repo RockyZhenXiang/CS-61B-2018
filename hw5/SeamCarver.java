@@ -1,5 +1,8 @@
 import java.awt.*;
+import java.util.Arrays;
+
 import edu.princeton.cs.algs4.Picture;
+
 public class SeamCarver {
     private Picture picture;
     public SeamCarver(Picture picture) {
@@ -85,14 +88,75 @@ public class SeamCarver {
                 + Math.pow(upGreen - downGreen, 2);
     }
 
-
+    /**
+     * @return sequence of indices for horizontal seam that has
+     * the min sum energy
+     */
     public int[] findHorizontalSeam() {
+        int[] res = new int[height()];
+        return res;
+    }
 
-        return new int[10];
-    }           // sequence of indices for horizontal seam
+    /**
+     * @return sequence of indices for vertical seam that has
+     * the min energy
+     */
     public int[] findVerticalSeam() {
-        return new int[10];
-    }           // sequence of indices for vertical seam
+
+        int[] res = new int[height()];
+        double[][] sumEnergys = new double[height()][width()];
+
+        for (int i = 0; i < width(); i += 1) {
+            sumEnergys[0][i] = energy(i, 0);
+        }
+
+        for (int row = 1; row < height(); row += 1) {
+            for (int col = 0; col < width(); col += 1) {
+                if (col == 0) {
+                    sumEnergys[row][col] = energy(col, row)
+                            + Math.min(sumEnergys[row - 1][col], sumEnergys[row - 1][col + 1]);
+                } else if (col == width() - 1) {
+                    sumEnergys[row][col] = energy(col, row)
+                            + Math.min(sumEnergys[row - 1][col], sumEnergys[row - 1][col - 1]);
+                } else {
+                    sumEnergys[row][col] = energy(col, row)
+                            + Math.min(sumEnergys[row - 1][col],
+                            Math.min(sumEnergys[row - 1][col - 1], sumEnergys[row - 1][col + 1]));
+                }
+            }
+        }
+
+        res[res.length - 1] = minIndex(sumEnergys[sumEnergys.length - 1], 0);
+        // backtracking
+        for (int i = res.length - 2; i >= 0; i--) {
+            if (res[i + 1] == 0) {
+                double[] splice = Arrays.copyOfRange(sumEnergys[i], 0, 2);
+                res[i] = minIndex(splice, 0);
+            } else if (res[i + 1] == width() - 1) {
+                double[] splice = Arrays.copyOfRange(sumEnergys[i], width() - 2, width() );
+                res[i] = minIndex(splice, width() - 2);
+            } else {
+                double[] splice = Arrays.copyOfRange(sumEnergys[i], res[i + 1] - 1, res[i + 1] + 2);
+                res[i] = minIndex(splice, res[i + 1] - 1);
+            }
+        }
+
+        return res;
+    }
+
+    private int minIndex(double[] arr, int first) {
+        int id = 0;
+        double che = Double.MAX_VALUE;
+        for (int i = 0; i < arr.length; i += 1) {
+            if (arr[i] < che) {
+                id = i;
+                che = arr[i];
+            }
+        }
+        return id + first;
+    }
+
+
     public void removeHorizontalSeam(int[] seam) {
 
     }   // remove horizontal seam from picture
