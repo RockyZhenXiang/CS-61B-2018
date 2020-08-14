@@ -93,7 +93,22 @@ public class SeamCarver {
      * the min sum energy
      */
     public int[] findHorizontalSeam() {
-        int[] res = new int[height()];
+        Picture originalPic = new Picture(picture);
+        picture = picTranspose(originalPic);
+        int[] res = findVerticalSeam();
+        picture = originalPic;
+        return res;
+    }
+
+    private Picture picTranspose(Picture picture) {
+        Picture res = new Picture(picture.height(), picture.width());
+        for (int i = 0; i < res.width(); i += 1) {
+            for (int j = 0; j < res.height(); j += 1) {
+                Color color = picture.get(j, i);
+                res.set(i, j, color);
+            }
+        }
+
         return res;
     }
 
