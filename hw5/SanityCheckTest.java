@@ -52,6 +52,8 @@ public class SanityCheckTest {
         int[] seam = sc.findHorizontalSeam();
         int[] expected = {2, 2, 1, 2, 1, 2};
         assertArrayEquals(expected, seam);
+        assertEquals(p.height(), sc.height());
+        assertEquals(p.width(), sc.width());
     }
 
     public static void main(String[] args) {
