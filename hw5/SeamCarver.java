@@ -6,15 +6,15 @@ import edu.princeton.cs.algs4.Picture;
 
 public class SeamCarver {
     private Picture picture;
-    public SeamCarver(Picture picture) {
-        this.picture = new Picture(picture);
+    public SeamCarver(Picture pic) {
+        picture = new Picture(pic);
     }
 
     /**
      * @return current picture
      */
     public Picture picture() {
-        return picture;
+        return new Picture(picture);
     }
 
     /**
@@ -60,9 +60,9 @@ public class SeamCarver {
         int leftBlue = picture.get(left, y).getBlue();
         int leftGreen = picture.get(left, y).getGreen();
 
-        return Math.pow(rightRed - leftRed, 2)
-                 + Math.pow(rightBlue - leftBlue, 2)
-                 + Math.pow(rightGreen - leftGreen, 2);
+        return (rightRed - leftRed) * (rightRed - leftRed)
+                 + (rightBlue - leftBlue) * (rightBlue - leftBlue)
+                + (rightGreen - leftGreen) * (rightGreen - leftGreen);
     }
 
     private double verEnergy(int x, int y) {
@@ -154,7 +154,7 @@ public class SeamCarver {
                 double[] splice = Arrays.copyOfRange(sumEnergys[i], 0, 2);
                 res[i] = minIndex(splice, 0);
             } else if (res[i + 1] == width() - 1) {
-                double[] splice = Arrays.copyOfRange(sumEnergys[i], width() - 2, width() );
+                double[] splice = Arrays.copyOfRange(sumEnergys[i], width() - 2, width());
                 res[i] = minIndex(splice, width() - 2);
             } else {
                 double[] splice = Arrays.copyOfRange(sumEnergys[i], res[i + 1] - 1, res[i + 1] + 2);
