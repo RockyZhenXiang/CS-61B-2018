@@ -1,4 +1,5 @@
-import java.awt.*;
+
+import java.awt.Color;
 import java.util.Arrays;
 
 import edu.princeton.cs.algs4.Picture;
@@ -6,7 +7,7 @@ import edu.princeton.cs.algs4.Picture;
 public class SeamCarver {
     private Picture picture;
     public SeamCarver(Picture picture) {
-        this.picture = picture;
+        this.picture = new Picture(picture);
     }
 
     /**
@@ -40,7 +41,7 @@ public class SeamCarver {
         return horEnergy(x, y) + verEnergy(x, y);
     }
 
-    private double horEnergy (int x, int y) {
+    private double horEnergy(int x, int y) {
         int maxW = width();
         int right = x + 1;
         int left = x - 1;
@@ -64,7 +65,7 @@ public class SeamCarver {
                  + Math.pow(rightGreen - leftGreen, 2);
     }
 
-    private double verEnergy (int x, int y) {
+    private double verEnergy(int x, int y) {
         int maxH = height();
         int up = y - 1;
         int down = y + 1;
@@ -100,11 +101,11 @@ public class SeamCarver {
         return res;
     }
 
-    private Picture picTranspose(Picture picture) {
-        Picture res = new Picture(picture.height(), picture.width());
+    private Picture picTranspose(Picture pic) {
+        Picture res = new Picture(pic.height(), pic.width());
         for (int i = 0; i < res.width(); i += 1) {
             for (int j = 0; j < res.height(); j += 1) {
-                Color color = picture.get(j, i);
+                Color color = pic.get(j, i);
                 res.set(i, j, color);
             }
         }
@@ -119,7 +120,12 @@ public class SeamCarver {
     public int[] findVerticalSeam() {
 
         int[] res = new int[height()];
+
         double[][] sumEnergys = new double[height()][width()];
+
+        if (width() == 1) {
+            return res;
+        }
 
         for (int i = 0; i < width(); i += 1) {
             sumEnergys[0][i] = energy(i, 0);
